@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-document.addEventListener("DOMContentLoaded", function () {
-=======
+
 document.addEventListener("DOMContentLoaded", function() { 
-<<<<<<< HEAD
 
     //set header text
     const info = document.querySelector('div.a');
@@ -39,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout( function () {
             section.innerHTML='';
         }, 5000);
+
         //https://stackoverflow.com/questions/40554378/clear-innerhtml-after-5-seconds
         // function showSnackBar(message) {
 //     const snack = document.querySelector("#snackbar");
@@ -65,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
     listTitle.textContent = "List of Companies";
     listofCompanies.appendChild(listTitle);
 
+    // check for local storage, not doesn't exist then fetch
     fetch(url1)
     .then( response => {
         if (response.ok) { return response.json()}
@@ -72,9 +71,11 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .then( data => {
         companies(data);
+        // save local storage
     })
     .catch(err => {console.log(err)});
 
+    
     function companies(company) {
         const select = document.createElement('select');
         listofCompanies.appendChild(select);
@@ -110,9 +111,9 @@ document.addEventListener("DOMContentLoaded", function() {
 //     document.querySelector("#galleryHome").href = galleries.link;
 //     document.querySelector("#galleryHome").textContent = galleries.link;
 // }
-=======
+
     //header();
->>>>>>> 783a5eb3b03e425287397f3210ce2643bda29984
+
 
     const boxSelector = document.querySelectorAll('.box');
     // display functions
@@ -128,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function() {
     
     function header() {
         const info = document.querySelector('div.a');
-<<<<<<< HEAD
         info.style.display = "grid";
         //create elements to be displayed
         const credits = document.createElement('label');
@@ -207,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error(error));
     }
 
-=======
         const title = document.createElement('label');
         title.appendChild(title);
         info.textContent = "COMP 3512 Assign1";
@@ -267,7 +266,5 @@ document.addEventListener("DOMContentLoaded", function() {
                 section.innerHTML = '';
             }, 5000);
         })
->>>>>>> 4f97e7c7f39fe7fb7f564680c691d9b48d0a057d
->>>>>>> 783a5eb3b03e425287397f3210ce2643bda29984
 
 });
