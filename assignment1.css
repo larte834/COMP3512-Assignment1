@@ -79,3 +79,14 @@ animation: load 1.2s infinite 0s ease-in-out;
 animation-direction: alternate;
 text-shadow: 0 0 1px white;
 }
+
+#ul1{
+  list-style: none;
+  max-height: 100vh;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+}
+ul li {
+  border: 1px solid black;
+}
