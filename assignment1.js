@@ -85,16 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => { console.log(err) });
     }
 
-    function companies(company) {
-        const select = document.createElement('select');
-        listofCompanies.appendChild(select);
-        for (let c of company) {
-            let opt = document.createElement('option');
-            opt.setAttribute('value', c.symbol);
-            opt.textContent = c.name;
-            select.appendChild(input);
-        }
-    }
+    // function companies(company) {
+    //     const select = document.createElement('select');
+    //     listofCompanies.appendChild(select);
+    //     for (let c of company) {
+    //         let opt = document.createElement('option');
+    //         opt.setAttribute('value', c.symbol);
+    //         opt.textContent = c.name;
+    //         select.appendChild(input);
+    //     }
+    // }
 
 
 
@@ -188,34 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
             list.appendChild(companyName);
         }
     }
-
-    title.appendChild(title);
-    info.textContent = "COMP 3512 Assign1";
-
-    /*
-    function header() {
-        const info = document.querySelector('div.a');
-        document.querySelector("div.a").style.display = "grid";
-        //create elements to be displayed
-        const credits = document.createElement('label');
-        const name = document.createElement('label');
-        const course = document.createElement('label');
-        const party = document.createElement('label');
-
-        //create text content
-        credits.textContent = "Credits:"
-        name.textContent = "Randy Lam & Lidiya Artemenko";
-        course.textContent = "Comp 3512";
-        party.textContent = "";               
-
-        //append labels to the div
-        info.appendChild(credits);
-        info.appendChild(name);
-        info.appendChild(course);
-        info.appendChild(party);
-    }
-
-    */
 
     info.addEventListener('mouseover', (e) => {
         //show header info
