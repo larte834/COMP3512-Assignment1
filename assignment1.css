@@ -82,7 +82,11 @@ text-shadow: 0 0 1px white;
 
 ul li {
   border: 1px solid black;
-  display: flex;
+}
+
+
+ul {
+  
   list-style: none;
   max-height: 100vh;
   margin: 0;
