@@ -101,24 +101,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     clearButton.addEventListener('click', () => {
         clearScreen();
+        
     });
     
     // parsedCompanyList= JSON.parse(listOfCompanies);
     // displayList(parsedCompanyList);
 
     function displayList(data) {
-        const list = document.createElement('ul');
-        listBox.appendChild(list);
+        const list = document.querySelector('#filterList');
+        // listBox.appendChild(list);
         //displaying list of companies
         for (let d of data) {
             const companyName = document.createElement('li');
             companyName.textContent = d.name;
             list.appendChild(companyName);
 
-            listBox.addEventListener('click', (e) => {
-                if (e.target !== companyName && e.target !== goButton) {
-                    return;
-                }
+            companyName.addEventListener('click', (e) => {
+                // if (e.target !== companyName && e.target !== goButton) {
+                //     return;
+                // }
+                console.log(clicked);
+
                     document.querySelector("div.c").style.display = "block";
                     document.querySelector("div.d").style.display = "block";
                     document.querySelector("div.e").style.display = "block";
@@ -135,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchBox = document.querySelector('.search');
     const suggestions = document.querySelector('#filterList');
     searchBox.addEventListener('keyup', displayMatches);
+    searchBox.addEventListener('change', displayList);
 
     function displayMatches() {
             const matches = findMatches(this.value, coList);
@@ -142,9 +146,9 @@ document.addEventListener("DOMContentLoaded", function () {
             suggestions.innerHTML = "";
 
             matches.forEach(m => {
-                var option = document.createElement('option');
-                option.textContent = m.name+", "+m.symbol;
-                suggestions.appendChild(option);
+                var li = document.createElement('li');
+                li.textContent = m.name+", "+m.symbol;
+                suggestions.appendChild(li);
             });
     }
 
