@@ -1,3 +1,10 @@
+let map;
+function initMap() {
+    map = new google.maps.Map(document.querySelector("div.e"), {
+        zoom: 6
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // set DOMS
@@ -8,41 +15,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const mapBox = document.querySelector('div.e');
     const stockBox = document.querySelector('div.f');
 
-
-    //set header text
+    //Create and append header
     const title = document.createElement('label');
+    const credits = document.createElement('label');
     title.textContent = "COMP 3512 Assign1";
+    credits.textContent = "Credits"
     headerBox.appendChild(title);
+    headerBox.appendChild(credits);
 
+    //Create and append header section
     const section = document.createElement('section');
     headerBox.appendChild(section);
+    //create elements to be displayed
+    const name = document.createElement('label');
+    const course = document.createElement('label');
+    const party = document.createElement('label');
 
-    headerBox.addEventListener('mouseenter', (e) => {
+    function header() {
         section.style.display = "grid";
-        //create elements to be displayed
-        const credits = document.createElement('label');
-        const name = document.createElement('label');
-        const course = document.createElement('label');
-        const party = document.createElement('label');
-
         //create text content
-        credits.textContent = "Credits:"
         name.textContent = "Randy Lam & Lidiya Artemenko";
         course.textContent = "Comp 3512";
         party.textContent = "";
 
         //append labels to the div
-        section.appendChild(credits);
         section.appendChild(name);
         section.appendChild(course);
         section.appendChild(party);
 
-
-        //hide header info after 5 sec
         setTimeout(function () {
             section.style.display = "none";
         }, 5000);
-    })
+    }
+
+    //show header section when mouse over
+    credits.addEventListener('mouseenter', header);
+
 
     const url1 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
     const url2 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=xxx';
@@ -50,10 +58,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const animation = document.querySelector('.animate');
     const coList = [];
 
+    function clearScreen() {
+        document.querySelector("div.c").style.display = "none";
+        document.querySelector("div.d").style.display = "none";
+        document.querySelector("div.e").style.display = "none";
+        document.querySelector("div.f").style.display = "none";
+    }
+    clearScreen();
 
     // check for local storage, not doesn't exist then fetch
-   // let listOfCompanies = localStorage.getItem('listOfCompanies');
-   // if (!listOfCompanies) {
+    let listOfCompanies = localStorage.getItem('listOfCompanies');
+    if (listOfCompanies) {
+        animation.style.display = "flex";
         fetch(url1)
             .then(response => {
                 if (response.ok) { return response.json() }
@@ -63,21 +79,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation.style.display = 'none';
                 // save local storage
                 let json = JSON.stringify(data);
-                //localStorage.setItem('listOfCompanies');
+                localStorage.setItem('listOfCompanies', json);
+                coList.push(...data); 
                 displayList(data);
-                coList.push(...data);
-              //  localStorage.setItem('listOfCompanies', json);
-                // const goButton = document.createElement('button');
-                // const clearButton = document.createElement('button');
-                // goButton.setAttribute('id', 'goButton');
-                // goButton.textContent = "GO";
-                // clearButton.setAttribute('id', 'clearButton');
-                // clearButton.textContent = "CLEAR";
-                // companyList.appendChild(goButton);
-                // companyList.appendChild(clearButton);
             })
             .catch(err => console.log(err));
-    //}
+    }
+
+    // create buttons for list 
+    const input = document.querySelector('.form');
+    const goButton = document.createElement('button');
+    const clearButton = document.createElement('button');
+    goButton.setAttribute('id', 'goButton');
+    goButton.textContent = "GO";
+    clearButton.setAttribute('id', 'clearButton');
+    clearButton.textContent = "CLEAR";
+    input.appendChild(goButton);
+    input.appendChild(clearButton);
+    clearButton.setAttribute("type", "reset");
+    goButton.setAttribute("type", "button");
+
+    clearButton.addEventListener('click', () => {
+        clearScreen();
+    });
+    
+    // parsedCompanyList= JSON.parse(listOfCompanies);
+    // displayList(parsedCompanyList);
 
     function displayList(data) {
         const list = document.createElement('ul');
@@ -87,8 +114,20 @@ document.addEventListener("DOMContentLoaded", function () {
             const companyName = document.createElement('li');
             companyName.textContent = d.name;
             list.appendChild(companyName);
-            companyName.addEventListener('click', (e) => {
-                console.log('clicked');
+
+            listBox.addEventListener('click', (e) => {
+                if (e.target !== companyName && e.target !== goButton) {
+                    return;
+                }
+                    document.querySelector("div.c").style.display = "block";
+                    document.querySelector("div.d").style.display = "block";
+                    document.querySelector("div.e").style.display = "block";
+                    document.querySelector("div.f").style.display = "block";
+                    //call on company info
+                    displayCompanyInfo(d);
+
+                    //call on map
+                    displayMap(d);
             });
         }
     }
@@ -107,7 +146,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 option.textContent = m.name+", "+m.symbol;
                 suggestions.appendChild(option);
             });
-            // companyName.addEventListener('change', displayCompanyInfo(d));
     }
 
     function findMatches(wordToMatch, coList) {
@@ -117,42 +155,63 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function displayCompanyInfo (data) {
-        companyInfoBox.style.display = "grid";
-        // const h2 = document.createElement('h2');
-        // h2.textContent = "Company Information";
-        // companyInfoBox.appendChild(h2);
-        // // const logo = document.createElement('img');
-        // // logo.setAttribute('src', data.);
-        const symbol = document.createElement('span');
-        //document.querySelector("#galleryCity").textContent = galleries.location.city;
-        document.querySelector("symbol").textContent = data.symbol;
-        // const sector = document.createElement('div');
-        // sector.textContent = data.sector;
-        // const subIndustry = document.createElement('div');
-        // subIndustry.textContent = data.subindustry;
-        // const address = document.createElement('div');
-        // address.textContent = data.address;
-        // const website = document.createElement('div');
-        // const companyURL = document.createElement('a');
-        // website.appendChild(companyURL);
-        // const exchange = document.createElement('div');
-        // const description = document.createElement('div');
+    //create elements to populate company info
+    const h2 = document.createElement('h2');
+    const logo = document.createElement('img');
+    const symbol = document.createElement('div');
+    const sector = document.createElement('div');
+    const subIndustry = document.createElement('div');
+    const address = document.createElement('div');
+    const website = document.createElement('div');
+    const companyURL = document.createElement('a');
+    const exchange = document.createElement('div');
+    const description = document.createElement('div');
+
+    //display company information
+    function displayCompanyInfo(data) {
+        //header
+        h2.textContent = "Company Information";
+        companyInfoBox.appendChild(h2);
+        
+        //image
+        logo.setAttribute('src', `logos/${data.symbol}.svg`)
+        companyInfoBox.appendChild(logo);
+
+        //symbol
+        symbol.textContent = "Symbol: " + data.symbol;
+        companyInfoBox.appendChild(symbol);
+        
+        //sector
+        sector.textContent = "Sector: " + data.sector;
+        companyInfoBox.appendChild(sector);
+
+        //subindustry
+        subIndustry.textContent = "Subindustry: " + data.subindustry;
+        companyInfoBox.appendChild(subIndustry);
+        
+        //address
+        address.textContent = "Address: " + data.address;
+        companyInfoBox.appendChild(address);
+        
+        //website
+        website.textContent = "Website: ";
+        companyURL.textContent = data.website;
+        companyInfoBox.appendChild(website);
+        companyURL.setAttribute('href', data.website);
+        companyInfoBox.appendChild(companyURL);
+  
+        //exchange
+        exchange.textContent = "Exchange: " + data.exchange;
+        companyInfoBox.appendChild(exchange);
+        
+        //description
+        description.textContent = "Description: " + data.description;
+        companyInfoBox.appendChild(description);
     }
 
-    // document.querySelector("#galleryName").textContent = galleries.nameEn;
-    //     document.querySelector("#galleryCity").textContent = galleries.location.city;
-    //     document.querySelector("#galleryNative").textContent = galleries.nameNative;;
-    //     document.querySelector("#galleryAddress").textContent = galleries.location.address;
-    //     document.querySelector("#galleryCountry").textContent = galleries.location.country;
-    //     document.querySelector("#galleryHome").href = galleries.link;
-    //     document.querySelector("#galleryHome").textContent = galleries.link;
-
-    // function displayMap (latitude, longitude) {
-    //     mapBox.style.height = '600px';
-    //     map = new google.maps.Map(mapBox, {
-    //         center: {lat:latitude, lng: longitude}, zoom: 6
-    //     });
-    // }
+    function displayMap(data) {
+        let coordinates = {lat: data.latitude, lng: data.longitude};
+        map.setCenter(coordinates);
+    }
 
 });

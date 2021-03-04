@@ -90,16 +90,25 @@ ul {
   list-style: none;
   max-height: 100vh;
   margin: 0;
-  overflow: auto;
+  overflow-y: auto;
   padding: 0;
 }
 
-form ul {
-  
-}
+/* img {
+  height: 170px;
+  width: 250px;
+} */
 
 #goButton #clearButton #viewChartButton {
   color: white;
   background-color: lightblue;
   border-radius: 95%;
+}
+
+label {
+  display: flex;
+}
+
+li, button {
+  cursor:pointer;
 }
