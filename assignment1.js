@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const animation = document.querySelector('.animate');
     const companyList = document.querySelector('div.b');
+    const co = [];
     // check for local storage, not doesn't exist then fetch
     let listOfCompanies = localStorage.getItem('listOfCompanies');
     if (!listOfCompanies) {
@@ -54,19 +55,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 // save local storage
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies');
+                co.push(...data);
             })
             .catch(err => { console.log(err) });
     }
 
+    const list = document.createElement('ul');
+    list.setAttribute('id', 'ul1');
+    companyList.appendChild(list);
+
     function displayList(data) {
-        // displaying list of companies
-        const list = document.createElement('ul');
-        list.setAttribute('id', 'ul1');
-        companyList.appendChild(list);
-        for (d of data) {
+        //displaying list of companies
+        for (let d of data) {
             const companyName = document.createElement('li');
             companyName.textContent = d.name;
             list.appendChild(companyName);
         }
     }
+
+    // const searchBox = document.querySelector('.search');
+    // const ul1 = document.querySelector('#ul1');
+    // searchBox.addEventListener('keyup', displayMatches);
+
+    const searchBox = document.querySelector('.search');
+    const suggestions = document.querySelector('#filterList');
+    searchBox.addEventListener('keyup', displayMatches);
+
+    // handler for keyboard input
+    function displayMatches() {
+        // don't start matching until user has typed in two letters
+        if (this.value.length >= 2) {
+            const matches = findMatches(this.value, co);
+
+            // first remove all existing options from list
+            suggestions.innerHTML = "";
+
+            // now add current suggestions to <datalist>
+            matches.forEach( m => {
+                let option = document.createElement('option');
+                option.textContent = m.name;
+                suggestions.appendChild(option);
+                console.log(option.textContent);
+            })
+        }
+    }
+
+   //uses filter and regular expression to create list of matching movies
+   function findMatches(wordToMatch, co) {
+     return co.filter(obj => {
+         const regex = new RegExp(wordToMatch, 'gi');
+         return obj.name.match(regex);
+       });
+   }
 });

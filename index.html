@@ -14,10 +14,20 @@
     <div class="box a hidden">
         Header
     </div>
+
     <!--loading ring found at https://codepen.io/alphardex/pen/XWWWBmQ */ -->
     <div class="box b"> 
         <h2>List of Companies</h2>
         <h2 class="animate">Loading</h2>
+
+        <form class="form">
+            <fieldset>
+                <legend>Filter: </legend>
+                <input type="text" class="search" list="filterList">
+                <datalist id="filterList">
+                </datalist>
+            </fieldset>
+        </form>
     </div>
 
     <div class="box c">

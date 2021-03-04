@@ -90,3 +90,8 @@ padding: 0;
 ul li {
 border: 1px solid black;
 }
+
+.form ul {
+  list-style: none;
+  
+}
