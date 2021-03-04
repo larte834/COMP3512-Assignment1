@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // check for local storage, not doesn't exist then fetch
     let listOfCompanies = localStorage.getItem('listOfCompanies');
     if (!listOfCompanies) {
+        animation.style.display = "flex";
         fetch(url1)
             .then(response => {
                 animation.style.display = 'none';
@@ -78,8 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.log(err));
     }
 
-    let 
     displayList(coList);
+
     function createHeader() {
         const info = document.querySelector('div.a');
         info.style.display = "grid";
@@ -150,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         h2.textContent = "Company Information";
         companyInfoBox.appendChild(h2);
         const logo = document.createElement('img');
-        logo.setAttribute('src', data.)
+        //logo.setAttribute('src', data)
         const symbol = document.createElement('div');
         symbol.textContent = data.symbol;
         const sector = document.createElement('div');
@@ -163,6 +164,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const companyURL = document.createElement('a');
         website.appendChild(companyURL);
         const exchange = document.createElement('div');
+        exchange.textContent = data.exchange;
         const description = document.createElement('div');
+        description.textContent = data.description;
+    }
+
+    function displayMap (latitude, longitude) {
+        mapBox.style.height = '600px';
+        map = new google.maps.Map(mapBox, {
+            center: {lat:latitude, lng: longitude}, zoom: 6
+        });
     }
 });
