@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies');
                 co.push(...data);
+                
             })
             .catch(err => { console.log(err) });
     }
@@ -73,38 +74,5 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // const searchBox = document.querySelector('.search');
-    // const ul1 = document.querySelector('#ul1');
-    // searchBox.addEventListener('keyup', displayMatches);
 
-    const searchBox = document.querySelector('.search');
-    const suggestions = document.querySelector('#filterList');
-    searchBox.addEventListener('keyup', displayMatches);
-
-    // handler for keyboard input
-    function displayMatches() {
-        // don't start matching until user has typed in two letters
-        if (this.value.length >= 2) {
-            const matches = findMatches(this.value, co);
-
-            // first remove all existing options from list
-            suggestions.innerHTML = "";
-
-            // now add current suggestions to <datalist>
-            matches.forEach( m => {
-                let option = document.createElement('option');
-                option.textContent = m.name;
-                suggestions.appendChild(option);
-                console.log(option.textContent);
-            })
-        }
-    }
-
-   //uses filter and regular expression to create list of matching movies
-   function findMatches(wordToMatch, co) {
-     return co.filter(obj => {
-         const regex = new RegExp(wordToMatch, 'gi');
-         return obj.name.match(regex);
-       });
-   }
 });
