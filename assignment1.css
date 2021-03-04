@@ -80,13 +80,20 @@ animation-direction: alternate;
 text-shadow: 0 0 1px white;
 }
 
-#ul1{
+ul li {
+  border: 1px solid black;
+}
+form ul {
+  display: flex;
   list-style: none;
   max-height: 100vh;
   margin: 0;
   overflow: auto;
   padding: 0;
 }
-ul li {
-  border: 1px solid black;
+
+#goButton #clearButton #viewChartButton {
+  color: white;
+  background-color: lightblue;
+  border-radius: 95%;
 }
