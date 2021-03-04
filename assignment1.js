@@ -168,4 +168,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const description = document.createElement('div');
     }
 
+    function displayMap (latitude, longitude) {
+        mapBox.style.height = '600px';
+        map = new google.maps.Map(mapBox, {
+            center: {lat:latitude, lng: longitude}, zoom: 6
+        });
+    }
+
 });
