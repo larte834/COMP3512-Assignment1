@@ -48,7 +48,9 @@ body {
   grid-column: 3 / span 1;
   grid-row: 2 / span 1;
 }
-
+#dColumns {
+  grid-column: 6 / span 1;
+}
 /* loading animation found on https://codepen.io/kumarsidharth/pen/VBBbJW */
 @keyframes load {
   0%{

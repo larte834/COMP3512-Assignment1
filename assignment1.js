@@ -259,6 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayStockData(symbol){
 
+        stockBox.style.display = inline;
         queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
         const h2 = document.createElement('h2');
         h2.textContent = "Stock Data";
@@ -274,6 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
             else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
         })
         .then(data => {
+
             for (d of data) {
                 const stockDate = document.createElement('div');
                 const stockOpen = document.createElement('div');
@@ -282,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const stockHigh = document.createElement('div');
                 const stockVolume = document.createElement('div');
 
-                //stockDate = d.date.toString;
+                stockDate = d.date;
                 stockOpen = d.open;
                 stockClose = d.close;
                 stockLow = d.low;
