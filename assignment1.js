@@ -1,3 +1,4 @@
+//create maps
 let map;
 function initMap() {
     map = new google.maps.Map(document.querySelector("div.e"), {
@@ -6,7 +7,6 @@ function initMap() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
     // set up layout
 
     //header box
@@ -21,9 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // average min max box
     const ammBox = document.querySelector('div.d');
 
-    // // map box 
+    // map box 
     const mapBox = document.querySelector('div.e');
-
 
     //stock data box
     const stockBox = document.querySelector('div.f');
@@ -39,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Create and append header section
     const section = document.createElement('section');
     headerBox.appendChild(section);
+
     //create elements to be displayed
     const name = document.createElement('label');
     const course = document.createElement('label');
@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         section.appendChild(course);
         section.appendChild(party);
 
+        //hide header after 5 seconds
         setTimeout(function () {
             section.style.display = "none";
         }, 5000);
@@ -64,13 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
     //show header section when mouse over
     credits.addEventListener('mouseenter', header);
 
-
     const url1 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
-    //const url2 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=xxx';
 
+    //declare variables
     const animation = document.querySelector('.animate');
     const coList = [];
 
+    //initially hide sections until company selected
     function clearScreen() {
         document.querySelector("div.c").style.display = "none";
         document.querySelector("div.d").style.display = "none";
@@ -115,76 +116,67 @@ document.addEventListener("DOMContentLoaded", function () {
     clearButton.setAttribute("type", "reset");
     goButton.setAttribute("type", "button");
 
-    clearButton.addEventListener('click', () => {
-        clearScreen();
-        
-    });
+    // const searchBox = document.querySelector('.search');
+    // const suggestions = document.querySelector('#filterList');
+    // // searchBox.addEventListener('keyup', displayMatches);
 
-    const searchBox = document.querySelector('.search');
-    const suggestions = document.querySelector('#filterList');
-    // searchBox.addEventListener('keyup', displayMatches);
+    // function displayMatches() {
+    //     const matches = findMatches(this.value, coList);
 
-    function displayMatches() {
-        const matches = findMatches(this.value, coList);
+    //     suggestions.innerHTML = "";
 
-        suggestions.innerHTML = "";
+    //         matches.forEach(m => {
+    //             let li = document.createElement('li');
+    //             li.textContent = m.name+", "+m.symbol;
+    //             suggestions.appendChild(li);
+    //         });
+    // }
 
-            matches.forEach(m => {
-                let li = document.createElement('li');
-                li.textContent = m.name+", "+m.symbol;
-                suggestions.appendChild(li);
-            });
-    }
-
-    function findMatches(wordToMatch, coList) {
-        return coList.filter(obj => {
-            const regex = new RegExp(wordToMatch, 'gi');
-            return obj.symbol.match(regex);
-        });
-    }
+    // function findMatches(wordToMatch, coList) {
+    //     return coList.filter(obj => {
+    //         const regex = new RegExp(wordToMatch, 'gi');
+    //         return obj.symbol.match(regex);
+    //     });
+    // }
 
     function displayList(data) {
-        const searchBox = document.querySelector('.search');
         const suggestions = document.querySelector('#filterList');
+
         //displaying list of companies
         for (let d of data) {
             const companyName = document.createElement('li');
             companyName.textContent = d.name;
             suggestions.appendChild(companyName);
-            //suggestions.addEventListener('change', (e) => {
-                searchBox.addEventListener('keyup', displayMatches);
-            //});
+
             companyName.addEventListener('click', (e) => {
-                // if (e.target !== companyName && e.target !== goButton) {
-                //     return;
-                // }
                 document.querySelector("div.c").style.display = "block";
                 document.querySelector("div.d").style.display = "block";
                 document.querySelector("div.e").style.display = "block";
                 document.querySelector("div.f").style.display = "block";
+
                 //call on company info
                 displayCompanyInfo(d);
 
                 //call on map
                 displayMap(d);
 
-                // call displayStockInfo
+                // call on stock data
                 displayStockData(d.symbol);
             });
         }
     }
 
-        //create elements to populate company info
-        const h2 = document.createElement('h2');
-        const logo = document.createElement('img');
-        const symbol = document.createElement('div');
-        const sector = document.createElement('div');
-        const subIndustry = document.createElement('div');
-        const address = document.createElement('div');
-        const website = document.createElement('div');
-        const companyURL = document.createElement('a');
-        const exchange = document.createElement('div');
-        const description = document.createElement('div');
+    //create elements to populate company info
+    const h2 = document.createElement('h2');
+    const logo = document.createElement('img');
+    const symbol = document.createElement('div');
+    const sector = document.createElement('div');
+    const subIndustry = document.createElement('div');
+    const address = document.createElement('div');
+    const website = document.createElement('div');
+    const companyURL = document.createElement('a');
+    const exchange = document.createElement('div');
+    const description = document.createElement('div');
 
     //display company information
     function displayCompanyInfo(data) {
@@ -235,13 +227,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //create elements for stock box
     const viewChartsButton = document.createElement('button');
+    viewChartsButton.textContent = "View Charts";
+    stockBox.appendChild(viewChartsButton);
 
     function displayStockData(symbol){
         queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
         
-        viewChartsButton.textContent = "View Charts";
-        stockBox.appendChild(viewChartsButton);
-
 
         // fetch stock info
         fetch(queryString)
@@ -251,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             createStockTable(data);
+            stockCalculation(data);
         })
         .catch(err => console.log(err));
     }
@@ -300,5 +292,88 @@ document.addEventListener("DOMContentLoaded", function () {
                 stockHigh.textContent = d.high;
                 stockVolume.textContent = d.volume;
             }
+    }
+
+    function stockCalculation(data) {
+        const table = document.querySelector('#stockCalc');
+        //creating table rows 
+        const average = table.insertRow(0);
+        const minimum = table.insertRow(1);
+        const maximum = table.insertRow(2);
+
+        //create table cells for row 1
+        let avg = average.insertCell(0);
+        let avg_open = average.insertCell(1);
+        let avg_close = average.insertCell(2);
+        let avg_low = average.insertCell(3);
+        let avg_high = average.insertCell(4);
+        let avg_vol = average.insertCell(5);
+
+        //create table cells for row 2
+        let min = minimum.insertCell(0);
+        let min_open = minimum.insertCell(1);
+        let min_close = minimum.insertCell(2);
+        let min_low = minimum.insertCell(3);
+        let min_high = minimum.insertCell(4);
+        let min_vol = minimum.insertCell(5);
+
+        //create table cells for row 3
+        let max = maximum.insertCell(0);
+        let max_open = maximum.insertCell(1);
+        let max_close = maximum.insertCell(2);
+        let max_low = maximum.insertCell(3);
+        let max_high = maximum.insertCell(4);
+        let max_vol = maximum.insertCell(5);
+
+        //assign content to cells
+        avg.textContent = "Average";
+        min.textContent = "Min";
+        max.textContent = "Max"; 
+
+        //sort through open, close, high, low and volume and return list of sorted numbers
+        //then assign mix and max to cells
+        const sortedOpen = data.sort( (a,b) => {
+            return a.open < b.open ? -1 : 1;
+        });
+
+        min_open.textContent = sortedOpen[0].open;
+        max_open.textContent = sortedOpen[sortedOpen.length-1].open;
+
+        const sortedClose = data.sort( (a,b) => {
+            return a.close < b.close ? -1 : 1;
+        });
+
+        min_close.textContent = sortedClose[0].close;
+        max_close.textContent = sortedClose[sortedClose.length-1].close;
+
+        const sortedLow = data.sort( (a,b) => {
+            return a.low < b.low ? -1 : 1;
+        });
+
+        min_low.textContent = sortedLow[0].low;
+        max_low.textContent = sortedLow[sortedLow.length-1].low;
+
+        const sortedHigh = data.sort( (a,b) => {
+            return a.high < b.high ? -1 : 1;
+        });
+
+        min_high.textContent = sortedHigh[0].high;
+        max_high.textContent = sortedHigh[sortedHigh.length-1].high;
+
+        const sortedVolume = data.sort( (a,b) => {
+            return a.volume < b.volume ? -1 : 1;
+        });
+        
+        min_vol.textContent = sortedVolume[0].volume;
+        max_vol.textContent = sortedVolume[sortedVolume.length-1].volume;
+
+        // let total = 0;
+        // for(let i = 0; i < data.length; i++) {
+        //     total += parseInt(data[i].open);
+        //     console.log(parseInt(data[i].open));
+        // }
+        // console.log(total + " ");
+        // let avgCalc = total/data.length;
+        // console.log(avgCalc);
     }
 });
