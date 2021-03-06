@@ -21,35 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // average min max box
     const ammBox = document.querySelector('div.d');
 
-    // map box 
+    // // map box 
     const mapBox = document.querySelector('div.e');
 
-    // stock data box 
+
+    //stock data box
     const stockBox = document.querySelector('div.f');
-    h3stockDate = document.createElement('h3');
-    h3stockDate.textContent = "Date";
-    stockBox.appendChild(h3stockDate);
-
-    h3stockOpen = document.createElement('h3');
-    h3stockOpen.textContent = "Open";
-    stockBox.appendChild(h3stockOpen);
-
-    h3stockClose = document.createElement('h3');
-    h3stockClose.textContent = "Close"
-    stockBox.appendChild(h3stockClose);
-
-    h3stockLow = document.createElement('h3');
-    h3stockLow.textContent = "Low";
-    stockBox.appendChild(h3stockLow);
-
-    h3stockHigh = document.createElement('h3');
-    h3stockHigh.textContent = "High";
-    stockBox.appendChild(h3stockHigh);
-    
-    h3stockVolume = document.createElement('h3');
-    h3stockVolume.textContent = "Volume";
-    stockBox.appendChild(h3stockVolume);
-
 
     //Create and append header
     const title = document.createElement('label');
@@ -89,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const url1 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
-    const url2 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=xxx';
+    //const url2 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=xxx';
 
     const animation = document.querySelector('.animate');
     const coList = [];
@@ -122,6 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // fetch stock history
+    parsedCompanyList = JSON.parse(listOfCompanies);
+    displayList(parsedCompanyList);
 
     // create buttons for list 
     const input = document.querySelector('.form');
@@ -140,9 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
         clearScreen();
         
     });
-
-    parsedCompanyList = JSON.parse(listOfCompanies);
-    displayList(parsedCompanyList);
 
     const searchBox = document.querySelector('.search');
     const suggestions = document.querySelector('#filterList');
@@ -193,30 +169,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayMap(d);
 
                 // call displayStockInfo
-                //displayStockData(d.symbol);
+                displayStockData(d.symbol);
             });
         }
     }
-
-    // const searchBox = document.querySelector('.search');
-    // searchBox.addEventListener('change', search_list);
-    // function search_list() { 
-    //     let input = document.querySelector('.search').value;
-    //     input = input.toLowerCase(); 
-    //     let x = document.querySelector('#filterList'); 
-          
-    //     for (i = 0; i < x.length; i++) {  
-    //         if (!x[i].innerHTML.toLowerCase().includes(input)) { 
-    //             x[i].style.display="none"; 
-    //         } 
-    //         else { 
-    //             x[i].style.display="list-item";                  
-    //         } 
-    //     } 
-    // } 
-
-
-
 
         //create elements to populate company info
         const h2 = document.createElement('h2');
@@ -277,44 +233,80 @@ document.addEventListener("DOMContentLoaded", function () {
         map.setCenter(coordinates);
     }
 
-    // function displayStockData(symbol){
+    //create elements for stock box
+    const viewChartsButton = document.createElement('button');
 
-    //     queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
-    //     const h2 = document.createElement('h2');
-    //     h2.textContent = "Stock Data";
-    //     const viewChartsButton = document.createElement('button');
-    //     h2.appendChild(stockBox);
-    //     viewChartsButton.appendChild(stockBox);
-
-
-    //     // fetch stock info
-    //     fetch(queryString)
-    //     .then(response => {
-    //         if (response.ok) { return response.json() }
-    //         else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
-    //     })
-    //     .then(data => {
-    //         for (d of data) {
-    //             let stockDate = document.createElement('div');
-    //             let stockOpen = document.createElement('div');
-    //             let stockClose = document.createElement('div');
-    //             let stockLow = document.createElement('div');
-    //             let stockHigh = document.createElement('div');
-    //             let stockVolume = document.createElement('div');
-
-    //             //stockDate = d.date.toString;
-    //             stockOpen = d.open;
-    //             stockClose = d.close;
-    //             stockLow = d.low;
-    //             stockHigh = d.high;
-    //             stockVolume = d.volume;
-
-    //             // test function
-    //             console.log(stockDate, stockOpen, stockClose, stockHigh, stockLow, stockVolume);
-    //         }
-    //     })
-    //     .catch(err => console.log(err));
+    function displayStockData(symbol){
+        queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
+        
+        h2.textContent = "Stock Data";
+        stockBox.appendChild(h2);
+        
+        viewChartsButton.textContent = "View Charts";
+        stockBox.appendChild(viewChartsButton);
 
 
-    // }
+        // fetch stock info
+        fetch(queryString)
+        .then(response => {
+            if (response.ok) { return response.json() }
+            else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
+        })
+        .then(data => {
+            createStockTable(data);
+            const table = document.querySelector('#stockTable');
+            for (let i = 0; i > data.length; i++) {
+                console.log(i);
+                const row = table.insertRow(0);
+
+                const stockDate = data.date;
+                const stockOpen = data.open;
+                const stockClose = data.close;
+                const stockLow = data.low;
+                const stockHigh = data.high;
+                const stockVolume = data.volume;
+
+                console.log(stockDate[i] + ", " + stockOpen[i]);
+
+                // stockDate.textContent = row.insertCell(0);
+                // stockOpen.textContent = row.insertCell(1);
+                // stockClose.textContent = row.insertCell(2);
+                // stockLow.textContent = row.insertCell(3);
+                // stockHigh.textContent = row.insertCell(4);
+                // stockVolume.textContent = row.insertCell(5);
+
+            }
+        })
+        .catch(err => console.log(err));
+    }
+
+    function createStockTable(data) {
+        const table = document.querySelector('#stockTable');
+        
+        
+            for (let d of data) {
+                const row = table.insertRow(0);
+                
+                let stockDate = d.date;
+                let stockOpen = d.open;
+                let stockClose = d.close;
+                let stockLow = d.low;
+                let stockHigh = d.high;
+                let stockVolume = d.volume;
+
+                stockDate = row.insertCell(0);
+                stockOpen = row.insertCell(1);
+                stockClose = row.insertCell(2);
+                stockLow = row.insertCell(3);
+                stockHigh = row.insertCell(4);
+                stockVolume = row.insertCell(5);
+
+                stockDate.textContent = d.date;
+                stockOpen.textContent = d.open;
+                stockClose.textContent = d.close;
+                stockLow.textContent = d.low;
+                stockHigh.textContent = d.high;
+                stockVolume.textContent = d.volume;
+            }
+    }
 });
