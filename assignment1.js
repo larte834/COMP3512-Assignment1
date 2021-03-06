@@ -239,9 +239,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayStockData(symbol){
         queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
         
-        h2.textContent = "Stock Data";
-        stockBox.appendChild(h2);
-        
         viewChartsButton.textContent = "View Charts";
         stockBox.appendChild(viewChartsButton);
 
@@ -254,38 +251,33 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             createStockTable(data);
-            const table = document.querySelector('#stockTable');
-            for (let i = 0; i > data.length; i++) {
-                console.log(i);
-                const row = table.insertRow(0);
-
-                const stockDate = data.date;
-                const stockOpen = data.open;
-                const stockClose = data.close;
-                const stockLow = data.low;
-                const stockHigh = data.high;
-                const stockVolume = data.volume;
-
-                console.log(stockDate[i] + ", " + stockOpen[i]);
-
-                // stockDate.textContent = row.insertCell(0);
-                // stockOpen.textContent = row.insertCell(1);
-                // stockClose.textContent = row.insertCell(2);
-                // stockLow.textContent = row.insertCell(3);
-                // stockHigh.textContent = row.insertCell(4);
-                // stockVolume.textContent = row.insertCell(5);
-
-            }
         })
         .catch(err => console.log(err));
     }
 
     function createStockTable(data) {
+        //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
         const table = document.querySelector('#stockTable');
-        
+        table.createCaption();
+        table.textContent = "Stock Data";
+        const caption = table.insertRow(0);
+        let date = caption.insertCell(0);
+        let open = caption.insertCell(1);
+        let close = caption.insertCell(2);
+        let low = caption.insertCell(3);
+        let high = caption.insertCell(4);
+        let volume = caption.insertCell(5);
+
+        date.textContent = "Date";
+        open.textContent = "Open";
+        close.textContent = "Close";
+        low.textContent = "Low";
+        high.textContent = "High";
+        volume.textContent = "Volume";
+
         
             for (let d of data) {
-                const row = table.insertRow(0);
+                const row = table.insertRow(1);
                 
                 let stockDate = d.date;
                 let stockOpen = d.open;

@@ -110,3 +110,11 @@ label {
 li, button {
   cursor:pointer;
 }
+
+#stockTable {
+  width: max-content;
+}
+
+#stockTable td {
+  border: 1px solid black;
+}
