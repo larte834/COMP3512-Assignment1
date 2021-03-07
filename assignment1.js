@@ -116,28 +116,28 @@ document.addEventListener("DOMContentLoaded", function () {
     clearButton.setAttribute("type", "reset");
     goButton.setAttribute("type", "button");
 
-    // const searchBox = document.querySelector('.search');
-    // const suggestions = document.querySelector('#filterList');
-    // // searchBox.addEventListener('keyup', displayMatches);
+    const searchBox = document.querySelector('.search');
+    const suggestions = document.querySelector('#filterList');
+    searchBox.addEventListener('keyup', displayMatches);
 
-    // function displayMatches() {
-    //     const matches = findMatches(this.value, coList);
+    function displayMatches() {
+        const matches = findMatches(this.value, coList);
 
-    //     suggestions.innerHTML = "";
+        suggestions.innerHTML = "";
 
-    //         matches.forEach(m => {
-    //             let li = document.createElement('li');
-    //             li.textContent = m.name+", "+m.symbol;
-    //             suggestions.appendChild(li);
-    //         });
-    // }
+            matches.forEach(m => {
+                let li = document.createElement('li');
+                li.textContent = m.name+", "+m.symbol;
+                suggestions.appendChild(li);
+            });
+    }
 
-    // function findMatches(wordToMatch, coList) {
-    //     return coList.filter(obj => {
-    //         const regex = new RegExp(wordToMatch, 'gi');
-    //         return obj.symbol.match(regex);
-    //     });
-    // }
+    function findMatches(wordToMatch, coList) {
+        return coList.filter(obj => {
+            const regex = new RegExp(wordToMatch, 'gi');
+            return obj.symbol.match(regex);
+        });
+    }
 
     function displayList(data) {
         const suggestions = document.querySelector('#filterList');
@@ -154,13 +154,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.querySelector("div.e").style.display = "block";
                 document.querySelector("div.f").style.display = "block";
 
-                //call on company info
+                //call on company info to display
                 displayCompanyInfo(d);
 
-                //call on map
+                //call on map to display
                 displayMap(d);
 
-                // call on stock data
+                //call on stock data to display
                 displayStockData(d.symbol);
             });
         }
@@ -233,7 +233,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayStockData(symbol){
         queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
         
-
         // fetch stock info
         fetch(queryString)
         .then(response => {
@@ -367,13 +366,45 @@ document.addEventListener("DOMContentLoaded", function () {
         min_vol.textContent = sortedVolume[0].volume;
         max_vol.textContent = sortedVolume[sortedVolume.length-1].volume;
 
-        // let total = 0;
-        // for(let i = 0; i < data.length; i++) {
-        //     total += parseInt(data[i].open);
-        //     console.log(parseInt(data[i].open));
-        // }
-        // console.log(total + " ");
-        // let avgCalc = total/data.length;
-        // console.log(avgCalc);
+        let total = 0;
+        for(let i = 0; i < data.length; i++) {
+            total += parseFloat(data[i].open);
+        }
+
+        let avgCalc = total/data.length;
+        avg_open.textContent = avgCalc;
+
+        total = 0;
+        for(let i = 0; i < data.length; i++) {
+            total += parseFloat(data[i].close);
+        }
+
+        avgCalc = total/data.length;
+        avg_close.textContent = avgCalc;
+
+        total = 0;
+        for(let i = 0; i < data.length; i++) {
+            total += parseFloat(data[i].low);
+        }
+
+        avgCalc = total/data.length;
+        avg_low.textContent = avgCalc;
+
+        total = 0;
+        for(let i = 0; i < data.length; i++) {
+            total += parseFloat(data[i].high);
+        }
+
+        avgCalc = total/data.length;
+        avg_high.textContent = avgCalc;
+
+        total = 0;
+        for(let i = 0; i < data.length; i++) {
+            total += parseFloat(data[i].volume);
+        }
+        
+        avgCalc = total/data.length;
+        avg_vol.textContent = avgCalc;
+        
     }
 });
