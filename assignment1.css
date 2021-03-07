@@ -97,10 +97,11 @@ img {
   width: 350px;
 }
 
-#goButton #clearButton #viewChartButton {
+#goButton, #clearButton, #viewChartsButton, #speakButton, #closeButton {
   color: white;
-  background-color: lightblue;
-  border-radius: 95%;
+  background-color: blue;
+  border-radius: 1rem;
+  padding: .5rem 1rem;
 }
 
 label {
@@ -113,8 +114,17 @@ li, button {
 
 #stockTable {
   width: max-content;
+
 }
 
 #stockTable td {
   border: 1px solid black;
+
+}
+
+.f {
+  max-height: 80%;
+  margin: 0;
+  overflow-y: auto;
+  padding: 0;
 }
