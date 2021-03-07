@@ -1,5 +1,4 @@
 body {
-    margin: 20px;
     background-color: white;
     font-family: Open Sans, sans-serif;
     font-size: 0.8rem;
@@ -8,8 +7,9 @@ body {
 .container {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 250px 400px 1fr;
+  grid-template-columns: auto auto auto;
   grid-template-rows: repeat(4, auto);
+  /* max-height: 1000px; */
 }
 
 .box {
@@ -18,6 +18,7 @@ body {
   border-radius: 5px;
   padding: 20px;
   font-size: 150%;
+  /* max-height: 900px; */
 }
 
 .a {
@@ -28,25 +29,41 @@ body {
 .b {
   grid-column: 1;
   grid-row: 2 / span 3;
+  max-height: 900px;
+  overflow-y: scroll;
+  overflow-x: none;
 }
 
 .c {
   grid-column: 2;
   grid-row: 2;
+  max-height: 550px;
+  overflow-x: none;
+  overflow-y: scroll;
 }
 .d {
   grid-column: 3;
   grid-row: 4;
+  max-height: 100%;
+  margin: 0;
+  overflow-x: scroll;
+  overflow-y: none;
+  padding: 0;
 }
 
 .e {
   grid-column: 2;
   grid-row: 3 / span 2;
+  max-height: 450px;
 }
 
 .f {
   grid-column: 3;
   grid-row: 2 / span 2;
+  max-height: 800px;
+  margin: 0;
+  overflow: scroll;
+  padding: 0;
 }
 
 /* loading animation found on https://codepen.io/kumarsidharth/pen/VBBbJW */
@@ -84,12 +101,11 @@ ul li {
   border: 1px solid black;
 }
 
-
 ul {
   list-style: none;
-  max-height: 100vh;
+  /* max-height: 100vh; */
   margin: 0;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   padding: 0;
 }
 
@@ -97,10 +113,11 @@ img {
   width: 350px;
 }
 
-#goButton #clearButton #viewChartButton {
+#goButton, #clearButton, #viewChartsButton, #speakButton, #closeButton {
   color: white;
-  background-color: lightblue;
-  border-radius: 95%;
+  background-color: blue;
+  border-radius: 1rem;
+  padding: .5rem 1rem;
 }
 
 label {
@@ -108,7 +125,7 @@ label {
 }
 
 li, button {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 #stockTable {
@@ -116,5 +133,9 @@ li, button {
 }
 
 #stockTable td {
+  border: 1px solid black;
+}
+
+#stockCalc td {
   border: 1px solid black;
 }
