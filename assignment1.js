@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //show header section when mouse over
     credits.addEventListener('mouseenter', header);
 
-    const url1 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
+    const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
 
     //declare variables
     const animation = document.querySelector('.animate');
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // save local storage
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies', json);
-                coList.push(...data);
+                //coList.push(...data);
             })
             .catch(err => console.log(err));
     }
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayStockData(d.symbol);
 
                 // create and display 3 charts
-                displayCharts(d);
+                displayCharts(d, financialsStored);
 
                 speak(d, financialsStored);
 
@@ -263,13 +263,13 @@ document.addEventListener("DOMContentLoaded", function () {
         mapBox.style.display = "none";
         stockBox.style.display = "none";
 
-        chartBox.style.display = "grid";
+        chartBox.style.display = "block";
         speakBox.style.display = "block";
         financialsBox.style.display = "block"
     });
 
     function displayStockData(symbol) {
-        queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
+        queryString = `https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
 
 
         // fetch stock info
@@ -453,7 +453,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //displayCharts(parsedCompanyList.symbol);
     // function creates three charts using chartjs.org
     // chartA - Bar chart, chartB - candlestick, chartC - line
-    function displayCharts(data) {
+    function displayCharts(data1, data2) {
 
 
         const h2 = document.createElement('h2');
@@ -464,17 +464,18 @@ document.addEventListener("DOMContentLoaded", function () {
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
         const chartB = document.createElement('div');
-        chartA.setAttribute('id', 'chartB');
+        chartB.setAttribute('id', 'chartB');
         chartBox.appendChild(chartB);
         const chartC = document.createElement('div');
-        chartA.setAttribute('id', 'chartC');
-        chartBox.appendChild(chartC);
+        chartC.setAttribute('id', 'chartC');
+        chartBox.appendChild(chartC);   
 
         // Chart A - Bar
         let canvas1 = document.createElement('canvas');
         canvas1.setAttribute('id', 'canvas1');
         chartA.appendChild(canvas1);
         canvas1.setAttribute('height', 400);
+        canvas1.setAttribute('width', 400);
         var ctx = document.getElementById('canvas1').getContext('2d');
         var chart = new Chart(ctx, {
             // The type of chart we want to create
@@ -482,23 +483,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // The data for our dataset
             data: {
-                labels: [data.financials.years[2], data.financials.years[1], data.financials.years[0]],
+                labels: data1.financials.years,
                 datasets: [{
                     label: 'Revenue',
                     backgroundColor: 'blue',
-                    data: [data.financials.revenue[2], data.financials.revenue[1], data.financials.revenue[0]],
+                    data: data1.financials.revenue,
                 }, {
                     label: 'Earnings',
                     backgroundColor: 'green',
-                    data: [data.financials.earnings[2], data.financials.earnings[1], data.financials.earnings[0]],
+                    data: data1.financials.earnings,
                 }, {
                     label: 'Assets',
                     backgroundColor: 'orange',
-                    data: [data.financials.assets[2], data.financials.assets[1], data.financials.assets[0]],
+                    data: data1.financials.assets,
                 }, {
                     label: 'Liabilities',
                     backgroundColor: 'red',
-                    data: [data.financials.liabilities[2], data.financials.liabilities[1], data.financials.liabilities[0]],
+                    data: data1.financials.liabilities,
                 }]
             },
 
@@ -507,7 +508,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
 
-
+        
         /*
         // Chart B - Candlestick (needs both apis)
         let canvas2 = document.createElement('canvas');
@@ -521,23 +522,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // The data for our dataset
             data: {
-                labels: [data.financials.years[2], data.financials.years[1], data.financials.years[0]],
                 datasets: [{
-                    label: 'Revenue',
-                    backgroundColor: 'blue',
-                    data: [data.financials.revenue[2], data.financials.revenue[1], data.financials.revenue[0]],
+                    label: 'min',
+                    data: data2.low,
                 }, {
-                    label: 'Earnings',
-                    backgroundColor: 'green',
-                    data: [data.financials.earnings[2], data.financials.earnings[1], data.financials.earnings[0]],
+                    label: 'max',
+                    data: data2.max,
                 }, {
-                    label: 'Assets',
-                    backgroundColor: 'orange',
-                    data: [data.financials.assets[2], data.financials.assets[1], data.financials.assets[0]],
-                }, {
-                    label: 'Liabilities',
-                    backgroundColor: 'red',
-                    data: [data.financials.liabilities[2], data.financials.liabilities[1], data.financials.liabilities[0]],
+                    label: 'average',
+                    data: ((data2.min + data2.max) / 2 ),
                 }]
             },
 
@@ -546,23 +539,40 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         chartB.appendChild(canvas2);
+        */  
+        
 
         // Chart C - Line
         let canvas3 = document.createElement('canvas');
         canvas3.setAttribute('id', 'canvas3');
-        canvas3.getContext('2d');
-        let chart3 = new Chart(canvas3, {
-            // The type of chart we want to create (line)
-            type: line,
+        chartC.appendChild(canvas3);
+        canvas3.setAttribute('height', 400);
+        canvas3.setAttribute('width', 400);
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
+        const chart3 = new Chart(ctx3, {
+            // The type of chart we want to create
+            type: 'line',
 
-            // the data for dataset
-            data: data,
+            // The data for our dataset
+            data: {
+                labels: data2.date,
+                datasets: [{
+                    label: 'Close',
+                    data: data2.close,
+                }, {
+                    label: 'Volume',
+                    data: data2.volume,
+                }]
+            },
+            
+            // Configuration options go here
+            options: {
 
-            option: option
+            }
         });
 
         chartC.appendChild(canvas3);
-        */
+        
 
     }
 
