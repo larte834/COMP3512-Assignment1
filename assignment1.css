@@ -70,16 +70,25 @@ body {
 .g {
   grid-column: 1;
   grid-row: 2 / span 2;
+  /* max-height: 700px; */
+  overflow-x: none;
+  overflow-y: scroll;
 }
 
 .h {
   grid-column: 2;
   grid-row: 2;
+  /* max-height: 550px; */
+  overflow-x: none;
+  overflow-y: scroll;
 }
 
 .i {
   grid-column: 2;
   grid-row: 3;
+  /* max-height: 350px; */
+  overflow-x: none;
+  overflow-y: scroll;
 }
 
 /* loading animation found on https://codepen.io/kumarsidharth/pen/VBBbJW */
