@@ -1,3 +1,4 @@
+
 //create maps
 let map;
 function initMap() {
@@ -41,11 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Create and append header
     const title = document.createElement('label');
-    const credits = document.createElement('label');
+    const credits = document.createElement('div');
+    credits.setAttribute('id', 'crdts')
     title.textContent = "COMP 3512 Assign1";
     credits.textContent = "Credits"
     headerBox.appendChild(title);
-    headerBox.appendChild(credits);
+    title.appendChild(credits);
 
     //Create and append header section
     const section = document.createElement('section');
@@ -76,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     //show header section when mouse over
-    credits.addEventListener('mouseenter', header);
+    document.querySelector('#crdts').addEventListener('mouseenter', header);
 
     const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
 
@@ -119,16 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // create buttons for list 
     const input = document.querySelector('.form');
-    const goButton = document.createElement('button');
     const clearButton = document.createElement('button');
-    goButton.setAttribute('id', 'goButton');
-    goButton.textContent = "GO";
     clearButton.setAttribute('id', 'clearButton');
     clearButton.textContent = "CLEAR";
-    input.appendChild(goButton);
     input.appendChild(clearButton);
     clearButton.setAttribute("type", "reset");
-    goButton.setAttribute("type", "button");
 
     document.getElementById('clearButton').addEventListener('click', () => {
         displayList(parsedCompanyList);
@@ -176,7 +173,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayStockData(d.symbol);
 
                 // create and display 3 charts
-                displayCharts(d, financialsStored);
+                // displayCharts(d, financialsStored);
+                displayChartA(d);
 
                 // speak(d, financialsStored);
                 speak(d);
@@ -285,7 +283,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 createStockTable(data);
                 stockCalculation(data);
                 financialsStored.push(...data);
-
+                displayChartB(data);
             })
             .catch(err => console.log(err));
     }
@@ -465,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //displayCharts(parsedCompanyList.symbol);
     // function creates three charts using chartjs.org
     // chartA - Bar chart, chartB - candlestick, chartC - line
-    function displayCharts(data1, data2) {
+    function displayChartA(data1) {
 
 
         const h2 = document.createElement('h2');
@@ -475,9 +473,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const chartA = document.createElement('div');
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
-        const chartB = document.createElement('div');
-        chartB.setAttribute('id', 'chartB');
-        chartBox.appendChild(chartB);
+        
         const chartC = document.createElement('div');
         chartC.setAttribute('id', 'chartC');
         chartBox.appendChild(chartC);   
@@ -517,73 +513,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Configuration options go here
             options: {}
-        });
-
-
-        
-        /*
-        // Chart B - Candlestick (needs both apis)
-        let canvas2 = document.createElement('canvas');
-        canvas2.setAttribute('id', 'canvas2');
-        chartB.appendChild(canvas2);
-        canvas2.setAttribute('height', 400);
-        var ctx2 = document.getElementById('canvas2').getContext('2d');
-        var chart2 = new Chart(ctx2, {
-            // The type of chart we want to create
-            type: 'candlestick',
-
-            // The data for our dataset
-            data: {
-                datasets: [{
-                    label: 'min',
-                    data: data2.low,
-                }, {
-                    label: 'max',
-                    data: data2.max,
-                }, {
-                    label: 'average',
-                    data: ((data2.min + data2.max) / 2 ),
-                }]
-            },
-
-            // Configuration options go here
-            options: {}
-        });
-
-        chartB.appendChild(canvas2);
-        */  
-        
+        });        
 
         // Chart C - Line
-        let canvas3 = document.createElement('canvas');
-        canvas3.setAttribute('id', 'canvas3');
-        chartC.appendChild(canvas3);
-        canvas3.setAttribute('height', 400);
-        canvas3.setAttribute('width', 400);
-        const ctx3 = document.getElementById('canvas3').getContext('2d');
-        const chart3 = new Chart(ctx3, {
-            // The type of chart we want to create
-            type: 'line',
+        // let canvas3 = document.createElement('canvas');
+        // canvas3.setAttribute('id', 'canvas3');
+        // chartC.appendChild(canvas3);
+        // canvas3.setAttribute('height', 400);
+        // canvas3.setAttribute('width', 400);
+        // const ctx3 = document.getElementById('canvas3').getContext('2d');
+        // const chart3 = new Chart(ctx3, {
+        //     // The type of chart we want to create
+        //     type: 'line',
 
-            // The data for our dataset
-            data: {
-                labels: data2.date,
-                datasets: [{
-                    label: 'Close',
-                    data: data2.close,
-                }, {
-                    label: 'Volume',
-                    data: data2.volume,
-                }]
-            },
+        //     // The data for our dataset
+        //     data: {
+        //         labels: data2.date,
+        //         datasets: [{
+        //             label: 'Close',
+        //             data: data2.close,
+        //         }, {
+        //             label: 'Volume',
+        //             data: data2.volume,
+        //         }]
+        //     },
             
-            // Configuration options go here
-            options: {
+        //     // Configuration options go here
+        //     options: {
 
-            }
-        });
+        //     }
+        // });
 
-        chartC.appendChild(canvas3);
+        // chartC.appendChild(canvas3);
         
 
         //     option: option
@@ -593,6 +554,79 @@ document.addEventListener("DOMContentLoaded", function () {
         // // */
 
    }
+
+   function displayChartB(data) {
+    // const h2 = document.createElement('h2');
+    // h2.textContent = "Chart";
+    // chartBox.appendChild(h2);
+
+    // const chartB = document.createElement('div');
+    // chartB.setAttribute('id', 'chartB');
+    // chartBox.appendChild(chartB);
+
+    // let canvas2 = document.createElement('div');
+    // canvas2.setAttribute('id', 'canvas2');
+    // chartB.appendChild(canvas2);
+    // canvas2.setAttribute('height', 400);
+    // canvas2.setAttribute('width', 400);
+
+
+    var chartDom = document.getElementById('chartB');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        xAxis: {
+            data: ['Open', 'Close', 'Low', 'High']
+        },
+        yAxis: {
+        },
+        series: [{
+            type: 'k',
+
+            data: [
+                [20, 34, 10,38],
+                [40, 35, 30, 50],
+                [31, 38, 33, 44],
+                [38, 15, 5, 42]
+            ]
+        }]
+};
+option && myChart.setOption(option);
+
+    // Chart B - Candlestick (needs both apis)
+    // let canvas2 = document.createElement('canvas');
+    // canvas2.setAttribute('id', 'canvas2');
+    // chartB.appendChild(canvas2);
+    // canvas2.setAttribute('height', 400);
+    // var ctx2 = document.getElementById('canvas2').getContext('2d');
+    // const sortedO = data.sort((a, b) => {
+    //     return a.open < b.open ? -1 : 1;
+    // });
+    // var chart2 = new Chart(ctx2, {
+    //     // The type of chart we want to create
+    //     type: "candlestick",
+
+    //     // The data for our dataset
+    //     data: {
+    //         datasets: [{
+    //             label: 'min',
+    //             data: sortedO[0],
+    //         }, {
+    //             label: 'max',
+    //             //data: data2.max,
+    //         }, {
+    //             label: 'average',
+    //             //data: ((data2.min + data2.max) / 2 ),
+    //         }]
+    //     },
+
+    //     // Configuration options go here
+    //     options: {}
+    // });
+
+    //     chartB.appendChild(canvas2);
+}
 
     // function that triggers speech 
     function speak(data2) {
