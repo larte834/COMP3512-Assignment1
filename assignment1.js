@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const course = document.createElement('label');
     const party = document.createElement('label');
 
+    //create header
     function header() {
         section.style.display = "grid";
         //create text content
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //show header section when mouse over
     credits.addEventListener('mouseenter', header);
 
-    const url1 = 'http://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
+    const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
 
     //declare variables
     const animation = document.querySelector('.animate');
@@ -129,7 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
     clearButton.setAttribute("type", "reset");
     goButton.setAttribute("type", "button");
 
-    document.getElementById('clearButton').addEventListener('click', displayList(parsedCompanyList));
+    document.getElementById('clearButton').addEventListener('click', () => {
+        displayList(parsedCompanyList);
+    });
 
     const searchBox = document.querySelector('.search');
     const suggestions = document.querySelector('#filterList');
@@ -137,15 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayMatches() {
         const matches = findMatches(this.value, parsedCompanyList);
-
         suggestions.innerHTML = "";
-
-        // matches.forEach(m => {
-        //     let li = document.createElement('li');
-        //     li.textContent = m.name + ", " + m.symbol;
-        //     suggestions.appendChild(li);
-
-        // });
         displayList(matches);
     }
 
@@ -164,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const companyName = document.createElement('li');
             companyName.textContent = `${d.name}, ${d.symbol}`;
             suggestions.appendChild(companyName);
-
+            //const goBtn = document.getElementById('goButton');
             companyName.addEventListener('click', (e) => {
                 document.querySelector("div.c").style.display = "block";
                 document.querySelector("div.d").style.display = "block";
@@ -183,27 +178,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 // create and display 3 charts
                 displayCharts(d);
 
-                speak(d, financialsStored);
+                // speak(d, financialsStored);
+                speak(d);
 
-                displayFinancials(d, financialsStored);
+            //    displayFinancials(d, financialsStored);
+                displayFinancials(d);
+
             });
         }
     }
 
-    //create elements to populate company info
-    const h2 = document.createElement('h2');
-    const logo = document.createElement('img');
-    const symbol = document.createElement('div');
-    const sector = document.createElement('div');
-    const subIndustry = document.createElement('div');
-    const address = document.createElement('div');
-    const website = document.createElement('div');
-    const companyURL = document.createElement('a');
-    const exchange = document.createElement('div');
-    const description = document.createElement('div');
-
     //display company information
     function displayCompanyInfo(data) {
+        //clear info box
+        companyInfoBox.innerHTML = "";
+
+        //create elements to populate company info
+        const h2 = document.createElement('h2');
+        const logo = document.createElement('img');
+        const symbol = document.createElement('div');
+        const sector = document.createElement('div');
+        const subIndustry = document.createElement('div');
+        const address = document.createElement('div');
+        const website = document.createElement('div');
+        const companyURL = document.createElement('a');
+        const exchange = document.createElement('div');
+        const description = document.createElement('div');
+
         //header
         h2.textContent = "Company Information";
         companyInfoBox.appendChild(h2);
@@ -244,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
         companyInfoBox.appendChild(description);
     }
 
+    //set map coordinates
     function displayMap(data) {
         let coordinates = { lat: data.latitude, lng: data.longitude };
         map.setCenter(coordinates);
@@ -256,6 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     stockBox.prepend(viewChartsButton);
     viewChartsButton.style.cssFloat = "right";
 
+    //hide and display necessary display boxes 
     viewChartsButton.addEventListener('click', () => {
         listBox.style.display = "none";
         companyInfoBox.style.display = 'none';
@@ -268,9 +271,9 @@ document.addEventListener("DOMContentLoaded", function () {
         financialsBox.style.display = "block"
     });
 
+    //fetch stock data and call on functions to display it
     function displayStockData(symbol) {
-        queryString = `http://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
-
+        queryString = `https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
 
         // fetch stock info
         fetch(queryString)
@@ -287,9 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.log(err));
     }
 
+    //create table of stock data
     function createStockTable(data) {
         //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
+        //create table cells
         const table = document.querySelector('#stockTable');
+        table.innerHTML = "";
         table.createCaption();
         table.textContent = "Stock Data";
         const caption = table.insertRow(0);
@@ -300,6 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let high = caption.insertCell(4);
         let volume = caption.insertCell(5);
 
+        //assign caption values
         date.textContent = "Date";
         open.textContent = "Open";
         close.textContent = "Close";
@@ -307,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
         high.textContent = "High";
         volume.textContent = "Volume";
 
-
+        //loop through data and populate cells
         for (let d of data) {
             const row = table.insertRow(1);
 
@@ -334,9 +341,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    //create table with avg, min, max values
     function stockCalculation(data) {
         const table = document.querySelector('#stockCalc');
+
+        //clear table
         table.innerHTML = "";
+        
         //creating table rows 
         const average = table.insertRow(0);
         const minimum = table.insertRow(1);
@@ -372,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
         max.textContent = "Max";
 
         //sort through open, close, high, low and volume and return list of sorted numbers
-        //then assign mix and max to cells
+        //then assign min and max to cells
         const sortedOpen = data.sort((a, b) => {
             return a.open < b.open ? -1 : 1;
         });
@@ -408,6 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
         min_vol.textContent = sortedVolume[0].volume;
         max_vol.textContent = sortedVolume[sortedVolume.length - 1].volume;
 
+        //calculate avg and populate cells
         let total = 0;
         for(let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
@@ -470,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
         chartA.setAttribute('id', 'chartC');
         chartBox.appendChild(chartC);
 
-        // Chart A - Bar
+    //     // Chart A - Bar
         let canvas1 = document.createElement('canvas');
         canvas1.setAttribute('id', 'canvas1');
         chartA.appendChild(canvas1);
@@ -508,65 +520,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-        /*
-        // Chart B - Candlestick (needs both apis)
-        let canvas2 = document.createElement('canvas');
-        canvas2.setAttribute('id', 'canvas2');
-        chartB.appendChild(canvas2);
-        canvas2.setAttribute('height', 400);
-        var ctx2 = document.getElementById('canvas2').getContext('2d');
-        var chart2 = new Chart(ctx2, {
-            // The type of chart we want to create
-            type: 'candlestick',
+    //     /*
+    //     // Chart B - Candlestick (needs both apis)
+        // let canvas2 = document.createElement('canvas');
+        // canvas2.setAttribute('id', 'canvas2');
+        // chartB.appendChild(canvas2);
+        // canvas2.setAttribute('height', 400);
+        // var ctx2 = document.getElementById('canvas2').getContext('2d');
+        // var chart2 = new Chart(ctx2, {
+        //     // The type of chart we want to create
+        //     type: 'candlestick',
 
-            // The data for our dataset
-            data: {
-                labels: [data.financials.years[2], data.financials.years[1], data.financials.years[0]],
-                datasets: [{
-                    label: 'Revenue',
-                    backgroundColor: 'blue',
-                    data: [data.financials.revenue[2], data.financials.revenue[1], data.financials.revenue[0]],
-                }, {
-                    label: 'Earnings',
-                    backgroundColor: 'green',
-                    data: [data.financials.earnings[2], data.financials.earnings[1], data.financials.earnings[0]],
-                }, {
-                    label: 'Assets',
-                    backgroundColor: 'orange',
-                    data: [data.financials.assets[2], data.financials.assets[1], data.financials.assets[0]],
-                }, {
-                    label: 'Liabilities',
-                    backgroundColor: 'red',
-                    data: [data.financials.liabilities[2], data.financials.liabilities[1], data.financials.liabilities[0]],
-                }]
-            },
+        //     // The data for our dataset
+        //     data: {
+        //         labels: [data.financials.years[2], data.financials.years[1], data.financials.years[0]],
+        //         datasets: [{
+        //             label: 'Revenue',
+        //             backgroundColor: 'blue',
+        //             data: [data.financials.revenue[2], data.financials.revenue[1], data.financials.revenue[0]],
+        //         }, {
+        //             label: 'Earnings',
+        //             backgroundColor: 'green',
+        //             data: [data.financials.earnings[2], data.financials.earnings[1], data.financials.earnings[0]],
+        //         }, {
+        //             label: 'Assets',
+        //             backgroundColor: 'orange',
+        //             data: [data.financials.assets[2], data.financials.assets[1], data.financials.assets[0]],
+        //         }, {
+        //             label: 'Liabilities',
+        //             backgroundColor: 'red',
+        //             data: [data.financials.liabilities[2], data.financials.liabilities[1], data.financials.liabilities[0]],
+        //         }]
+        //     },
 
-            // Configuration options go here
-            options: {}
-        });
+        //     // Configuration options go here
+        //     options: {}
+        // });
 
-        chartB.appendChild(canvas2);
+        // chartB.appendChild(canvas2);
 
-        // Chart C - Line
-        let canvas3 = document.createElement('canvas');
-        canvas3.setAttribute('id', 'canvas3');
-        canvas3.getContext('2d');
-        let chart3 = new Chart(canvas3, {
-            // The type of chart we want to create (line)
-            type: line,
+        // // Chart C - Line
+        // let canvas3 = document.createElement('canvas');
+        // canvas3.setAttribute('id', 'canvas3');
+        // canvas3.getContext('2d');
+        // let chart3 = new Chart(canvas3, {
+        //     // The type of chart we want to create (line)
+        //     type: line,
 
-            // the data for dataset
-            data: data,
+        //     // the data for dataset
+        //     data: data,
 
-            option: option
-        });
+        //     option: option
+        // });
 
-        chartC.appendChild(canvas3);
-        */
+        // chartC.appendChild(canvas3);
+        // // */
 
-    }
-
-
+   }
 
     // function that triggers speech 
     function speak(data2) {
@@ -579,7 +589,7 @@ document.addEventListener("DOMContentLoaded", function () {
         closeButton.setAttribute('id', 'closeButton');
         closeButton.textContent = "Close";
         const h2 = document.createElement('h2');
-        h2.textContent = "Company Name + Symbol";
+        h2.textContent = `${data2.name}, ${data2.symbol}`;
         speakBox.appendChild(h2);
         const p = document.createElement('p');
         p.textContent = data2.description;
@@ -621,10 +631,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    // function to display company financial information
+    //function to display company financial information
     function displayFinancials(data) {
-        const h2 = document.createElement('h2');
-        h2.textContent = "Financials";
-        financialsBox.appendChild(h2);
+        //select table and add a caption
+        const financeTable = document.querySelector('#financials');
+        financeTable.innerHTML = "";
+        financeTable.createCaption();
+        financeTable.textContent = "Financials";
+
+        //create rows
+        let years = financeTable.insertRow(0);
+        let revenues = financeTable.insertRow(1);
+        let earnings = financeTable.insertRow(2);
+        let assets = financeTable.insertRow(3);
+        let liabilities = financeTable.insertRow(4);
+
+        //create row cells
+        let yrs = years.insertCell(0);
+        let rev = revenues.insertCell(0);
+        let earn = earnings.insertCell(0);
+        let asts = assets.insertCell(0);
+        let liab = liabilities.insertCell(0);
+
+        //populate column 1
+        yrs.textContent = "Years";
+        rev.textContent = "Revenue";
+        earn.textContent = "Earnings";
+        asts.textContent = "Assets";
+        liab.textContent = "Liabilities";
+
+        //populate year row
+        let yr2019 = years.insertCell(1);
+        let yr2018 = years.insertCell(2);
+        let yr2017 = years.insertCell(3);
+
+        yr2019.textContent = data.financials.years[0];
+        yr2018.textContent = data.financials.years[1];
+        yr2017.textContent = data.financials.years[2];
+
+        //populate revenue row
+        let rv2019 = revenues.insertCell(1);
+        let rv2018 = revenues.insertCell(2);
+        let rv2017 = revenues.insertCell(3);
+
+        rv2019.textContent = data.financials.revenue[0];
+        rv2018.textContent = data.financials.revenue[1];
+        rv2017.textContent = data.financials.revenue[2];
+
+        //populate Earnings row
+        let earn2019 = earnings.insertCell(1);
+        let earn2018 = earnings.insertCell(2);
+        let earn2017 = earnings.insertCell(3);
+
+        earn2019.textContent = data.financials.earnings[0];
+        earn2018.textContent = data.financials.earnings[1];
+        earn2017.textContent = data.financials.earnings[2];
+
+        //populate assets row
+        let as2019 = assets.insertCell(1);
+        let as2018 = assets.insertCell(2);
+        let as2017 = assets.insertCell(3);
+
+        as2019.textContent = data.financials.assets[0];
+        as2018.textContent = data.financials.assets[1];
+        as2017.textContent = data.financials.assets[2];
+
+        //populate liabilities row
+        let li2019 = liabilities.insertCell(1);
+        let li2018 = liabilities.insertCell(2);
+        let li2017 = liabilities.insertCell(3);
+
+        li2019.textContent = data.financials.liabilities[0];
+        li2018.textContent = data.financials.liabilities[1];
+        li2017.textContent = data.financials.liabilities[2];
     }
 });
