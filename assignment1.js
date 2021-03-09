@@ -284,10 +284,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 stockCalculation(data);
                 financialsStored.push(...data);
                 displayChartB(data);
+                
+
+                //document.getElementById('date').addEventListener('click', sortDate(data));
+                //document.getElementById('open').addEventListener('click', sortOpen(data));
+
             })
             .catch(err => console.log(err));
     }
 
+    var sortBool = true;
+
+    //document.getElementById('date').addEventListener('click', sortDate());
+    //open.addEventListener('click', sortOpen(data));
+    //close.addEventListener('click', sortClose(data));
+    //low.addEventListener('click', sortLow(data));
+    //high.addEventListener('click', sortHigh(data));
+    //volume.addEventListener('click', sortVolume(data));
+    
     //create table of stock data
     function createStockTable(data) {
         //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
@@ -305,12 +319,47 @@ document.addEventListener("DOMContentLoaded", function () {
         let volume = caption.insertCell(5);
 
         //assign caption values
-        date.textContent = "Date";
-        open.textContent = "Open";
-        close.textContent = "Close";
-        low.textContent = "Low";
-        high.textContent = "High";
-        volume.textContent = "Volume";
+        //a = document.createElement('a');
+        //date.appendChild(a);
+        date.innerHTML  = "<a href='#'>Date</a>";
+        //a.setAttribute('href', '#');
+        date.setAttribute('id', "date");
+        
+        //open.appendChild(a);
+        open.innerHTML = "<a href='#'>Open</a>";
+        open.setAttribute('id', 'open');
+        
+        close.innerHTML = "<a href='#'>Close</a>";
+        close.setAttribute('id', "close");
+        
+        low.innerHTML = "<a href='#'>Low</a>";
+        low.setAttribute('id', 'low');
+        
+        high.innerHTML = "<a href='#'>High</a>";
+        high.setAttribute('id', 'high');
+        
+        volume.innerHTML = "<a href='#'>Volume</a>";
+        volume.setAttribute('id', 'volume');
+
+        document.getElementById('date').addEventListener('click', () => {
+            sortDate(data);
+        });
+        document.getElementById('open').addEventListener('click', () => {
+            sortOpen(data);
+        });
+        document.getElementById('close').addEventListener('click', () => {
+            sortClose(data);
+        });
+        document.getElementById('low').addEventListener('click', () => {
+            sortLow(data);
+        });
+        document.getElementById('high').addEventListener('click', () => {
+            sortHigh(data);
+        });
+        document.getElementById('volume').addEventListener('click', () => {
+            sortVolume(data);
+        });
+        
 
         //loop through data and populate cells
         for (let d of data) {
@@ -382,6 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //sort through open, close, high, low and volume and return list of sorted numbers
         //then assign min and max to cells
+
         const sortedOpen = data.sort((a, b) => {
             return a.open < b.open ? -1 : 1;
         });
@@ -458,6 +508,78 @@ document.addEventListener("DOMContentLoaded", function () {
         avgCalc = total/data.length;
         avg_vol.textContent = avgCalc;
         
+    }
+
+    function sortDate (data){
+        const sortedDate = data.sort((a, b) => {
+            if (sortBool)
+                return a.date < b.date ? -1 : 1;
+            else
+                return a.date > b.date ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedDate);
+    }
+
+    function sortOpen(data){
+        const sortedOpen = data.sort((a, b) => {
+            if(sortBool)
+                return a.open < b.open ? -1 : 1;
+            else 
+            return a.open > b.open ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedOpen);
+    }
+    function sortClose(data){
+        const sortedClose = data.sort((a, b) => {
+            if (sortBool)
+                return a.close < b.close ? -1 : 1;
+            else    
+            return a.close > b.close ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedClose);
+    }
+
+    function sortLow(data){
+        const sortedLow = data.sort((a, b) => {
+            if(sortBool)
+                return a.low < b.low ? -1 : 1;
+            else 
+                return a.low > b.low ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedLow);
+    }
+
+    function sortHigh(data){
+        const sortedHigh = data.sort((a, b) => {
+            if (sortBool)
+                return a.high < b.high ? -1 : 1;
+            else
+            return a.high > b.high ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedHigh);
+    }
+    function sortVolume(data){
+        const sortedVolume = data.sort((a, b) => {
+            if(sortBool)
+                return a.volume < b.volume ? -1 : 1;
+            else
+                return a.volume > b.volume ? -1 : 1;
+        });
+        swapBool();
+        createStockTable(sortedVolume);
+    }
+    function swapBool(){
+        if (sortBool)
+            sortBool = false;
+        else
+            sortBool = true;
+
+        return;
     }
 
     //displayCharts(parsedCompanyList.symbol);
