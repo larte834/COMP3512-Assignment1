@@ -6,9 +6,9 @@ function initMap() {
     });
 }
 
-//load DOM
 document.addEventListener("DOMContentLoaded", function () {
     // set up layout
+
     //header box
     const headerBox = document.querySelector('div.a');
 
@@ -39,7 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const financialsBox = document.querySelector('div.i');
     financialsBox.style.display = "none";
 
-    //Create and append permanent header title
+    // "elegant" solution 
+    const elegantSolution = document.querySelector('div.j');
+    elegantSolution.style.display = "none";
+
+    //Create and append header
     const title = document.createElement('label');
     const credits = document.createElement('div');
     credits.setAttribute('id', 'crdts')
@@ -47,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
     credits.textContent = "Credits"
     headerBox.appendChild(title);
     title.appendChild(credits);
+
+    //Create and append header section
     const section = document.createElement('section');
     headerBox.appendChild(section);
 
@@ -55,12 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const course = document.createElement('label');
     const party = document.createElement('label');
 
-    //create temporary header
+    //create header
     function header() {
         section.style.display = "grid";
         //create text content
         name.textContent = "Randy Lam & Lidiya Artemenko";
-        course.textContent = "COMP 3512";
+        course.textContent = "Comp 3512";
         party.textContent = "Google Maps, ECharts, chartsjs";
 
         //append labels to the div
@@ -77,9 +83,14 @@ document.addEventListener("DOMContentLoaded", function () {
     //show header section when mouse over
     document.querySelector('#crdts').addEventListener('mouseenter', header);
 
-    //declare variables
+    //set variable for url
     const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
-    const animation = document.querySelector('.animate');
+
+    //select animations
+    const animation = document.querySelector('#animate');
+    const animation2 = document.querySelector('#animate2');
+
+    //declare array of financials
     const financialsStored = [];
 
     //initially hide sections until company selected
@@ -129,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //get input and ul
     const searchBox = document.querySelector('.search');
     const suggestions = document.querySelector('#filterList');
-    //if key entered in input, sort list to display match
     searchBox.addEventListener('keyup', displayMatches);
 
     //display matches found
@@ -153,7 +163,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //loop through list of companies
         for (let d of data) {
-            //create list
             const companyName = document.createElement('li');
             companyName.textContent = `${d.name}, ${d.symbol}`;
             suggestions.appendChild(companyName);
@@ -174,21 +183,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 //call on stock data to display
                 displayStockData(d.symbol);
 
-                // create and display 3 charts
+                //display chart A
                 displayChartA(d);
 
                 //call on speak description function
                 speak(d);
 
-                //display financial information table when view btn clicked
-                createViewBtn(d);
+                //call on financial information table
+                displayFinancials(d);
+
             });
         }
     }
 
     //display company information
     function displayCompanyInfo(data) {
-        
         //clear info box
         companyInfoBox.innerHTML = "";
 
@@ -253,17 +262,18 @@ document.addEventListener("DOMContentLoaded", function () {
     //fetch stock data and call on functions to display it
     function displayStockData(symbol) {
         queryString = `https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
-        animation.style.display = "flex";
+
         // fetch stock info
+        animation2.style.display = "flex";
         fetch(queryString)
             .then(response => {
                 if (response.ok) { return response.json() }
                 else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
             })
             .then(data => {
-                animation.style.display = 'none';
-                
-                //call on function that create stock info table
+                animation2.style.display = "none";
+
+                //call on function that shows date, open, close, low, high, volume
                 createStockTable(data);
 
                 //call on function that creates avg, min, max table
@@ -272,22 +282,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 //push data into array named financialsStored
                 financialsStored.push(...data);
 
-                //display candlestick graph
-                //displayChartB(data);
-
+                //display chart C
+                displayChartC(data);
             })
             .catch(err => console.log(err));
     }
+
+
 
     //create elements for view button
     const viewChartsButton = document.createElement('button');
     viewChartsButton.setAttribute('id', 'viewChartsButton');
     viewChartsButton.textContent = "View Charts";
-    stockBox.appendChild(viewChartsButton);
-    // viewChartsButton.style.cssFloat = "right";
-
-    //call on view button event
-    function createViewBtn(d) {
+    
+    //create view button event
+    function createViewBtn() {
         //hide and display necessary display boxes 
         viewChartsButton.addEventListener('click', () => {
             listBox.style.display = "none";
@@ -295,19 +304,17 @@ document.addEventListener("DOMContentLoaded", function () {
             ammBox.style.display = "none";
             mapBox.style.display = "none";
             stockBox.style.display = "none";
-    
+        
             chartBox.style.display = "block";
             speakBox.style.display = "block";
             financialsBox.style.display = "block"
         });
-        //call display financials when view button clicked
-        displayFinancials(d);
     }
 
     //create table of stock data
     function createStockTable(data) {
         //call on chart view button
-        //createViewBtn();
+        createViewBtn();
 
         //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
         //create table cells
@@ -317,7 +324,10 @@ document.addEventListener("DOMContentLoaded", function () {
         title.textContent = "Stock Data";
         table.appendChild(title);
 
-        //create and populate first row of stock data table
+        //append button to table
+        table.appendChild(viewChartsButton);
+
+        //create first row of table
         const caption = table.insertRow(0);
         let date = caption.insertCell(0);
         let open = caption.insertCell(1);
@@ -327,21 +337,21 @@ document.addEventListener("DOMContentLoaded", function () {
         let volume = caption.insertCell(5);
 
         //add id's and links to table labels (row 1)
-        date.innerHTML  = "<a href='#'>Date</a>";
+        date.innerHTML = "<a href='#'>Date</a>";
         date.setAttribute('id', "date");
-        
+
         open.innerHTML = "<a href='#'>Open</a>";
         open.setAttribute('id', 'open');
-        
+
         close.innerHTML = "<a href='#'>Close</a>";
         close.setAttribute('id', "close");
-        
+
         low.innerHTML = "<a href='#'>Low</a>";
         low.setAttribute('id', 'low');
-        
+
         high.innerHTML = "<a href='#'>High</a>";
         high.setAttribute('id', 'high');
-        
+
         volume.innerHTML = "<a href='#'>Volume</a>";
         volume.setAttribute('id', 'volume');
 
@@ -364,17 +374,17 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('volume').addEventListener('click', () => {
             sortVolume(data);
         });
-        
+
 
         //loop through data and populate cells
         for (let d of data) {
             const row = table.insertRow(1);
 
             let stockDate = d.date;
-            let stockOpen = d.open;
-            let stockClose = d.close;
-            let stockLow = d.low;
-            let stockHigh = d.high;
+            let stockOpen = parseFloat(d.open);
+            let stockClose = parseFloat(d.close);
+            let stockLow = parseFloat(d.low);
+            let stockHigh = parseFloat(d.high);
             let stockVolume = d.volume;
 
             stockDate = row.insertCell(0);
@@ -385,11 +395,11 @@ document.addEventListener("DOMContentLoaded", function () {
             stockVolume = row.insertCell(5);
 
             stockDate.textContent = d.date;
-            stockOpen.textContent = d.open;
-            stockClose.textContent = d.close;
-            stockLow.textContent = d.low;
-            stockHigh.textContent = d.high;
-            stockVolume.textContent = d.volume;
+            stockOpen.textContent = parseFloat(d.open).toFixed(4);
+            stockClose.textContent = parseFloat(d.close).toFixed(4);
+            stockLow.textContent = parseFloat(d.low).toFixed(4);
+            stockHigh.textContent = parseFloat(d.high).toFixed(4);
+            stockVolume.textContent = numberCommas(d.volume);
         }
     }
 
@@ -399,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //clear table
         table.innerHTML = "";
-        
+
         //creating table rows 
         const average = table.insertRow(0);
         const minimum = table.insertRow(1);
@@ -441,84 +451,105 @@ document.addEventListener("DOMContentLoaded", function () {
             return a.open < b.open ? -1 : 1;
         });
 
-        min_open.textContent = sortedOpen[0].open;
-        max_open.textContent = sortedOpen[sortedOpen.length - 1].open;
+        const minOpen = parseFloat(sortedOpen[0].open);
+        const maxOpen = parseFloat(sortedOpen[sortedOpen.length - 1].open);
+        min_open.textContent = minOpen.toFixed(4);
+        max_open.textContent = maxOpen.toFixed(4);
+
 
         const sortedClose = data.sort((a, b) => {
             return a.close < b.close ? -1 : 1;
         });
 
-        min_close.textContent = sortedClose[0].close;
-        max_close.textContent = sortedClose[sortedClose.length - 1].close;
+        const minClose = parseFloat(sortedClose[0].close);
+        const maxClose = parseFloat(sortedClose[sortedClose.length - 1].close);
+        min_close.textContent = minClose.toFixed(4);
+        max_close.textContent = maxClose.toFixed(4);
+
 
         const sortedLow = data.sort((a, b) => {
             return a.low < b.low ? -1 : 1;
         });
 
-        min_low.textContent = sortedLow[0].low;
-        max_low.textContent = sortedLow[sortedLow.length - 1].low;
+        const minLow = parseFloat(sortedLow[0].low);
+        const maxLow = parseFloat(sortedLow[sortedLow.length - 1].low);
+        min_low.textContent = minLow.toFixed(4);
+        max_low.textContent = maxLow.toFixed(4);
+
 
         const sortedHigh = data.sort((a, b) => {
             return a.high < b.high ? -1 : 1;
         });
 
-        min_high.textContent = sortedHigh[0].high;
-        max_high.textContent = sortedHigh[sortedHigh.length - 1].high;
+        const minHigh = parseFloat(sortedHigh[0].high);
+        const maxHigh = parseFloat(sortedHigh[sortedHigh.length - 1].high);
+        min_high.textContent = minHigh.toFixed(4);
+        max_high.textContent = maxHigh.toFixed(4);
+
 
         const sortedVolume = data.sort((a, b) => {
             return a.volume < b.volume ? -1 : 1;
         });
 
-        min_vol.textContent = sortedVolume[0].volume;
-        max_vol.textContent = sortedVolume[sortedVolume.length - 1].volume;
+
+        const minVol = sortedVolume[0].volume;
+        const maxVol = sortedVolume[sortedVolume.length - 1].volume;
+        min_vol.textContent = numberCommas(minVol);
+        max_vol.textContent = numberCommas(maxVol);
 
         //calculate avg and populate cells
         let total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
         }
-
-        let avgCalc = total/data.length;
-        avg_open.textContent = avgCalc;
+        
+        let avgOpen = (total / data.length).toFixed(4);
+        avg_open.textContent = avgOpen;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].close);
         }
 
-        avgCalc = total/data.length;
-        avg_close.textContent = avgCalc;
+        const avgClose = (total / data.length).toFixed(4);
+        avg_close.textContent = avgClose;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].low);
         }
 
-        avgCalc = total/data.length;
-        avg_low.textContent = avgCalc;
+        const avgLow = (total / data.length).toFixed(4);
+        avg_low.textContent = avgLow;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].high);
         }
 
-        avgCalc = total/data.length;
-        avg_high.textContent = avgCalc;
+        const avgHigh = (total / data.length).toFixed(4);
+        avg_high.textContent = avgHigh;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].volume);
         }
-        
-        avgCalc = total/data.length;
-        avg_vol.textContent = avgCalc;
-        
+
+        const avgVol = (total / data.length).toFixed(4);
+        avg_vol.textContent = avgVol;
+
+        //pass data into B chart
+        displayChartB(minOpen, maxOpen, avgOpen, 
+                    minClose, maxClose, avgClose, 
+                    minLow, maxLow, avgLow, 
+                    minHigh, maxHigh, avgHigh);
+
     }
 
     let sortBool = true;
 
     //function to sort data by date
-    function sortDate (data){
+    function sortDate(data) {
         const sortedDate = data.sort((a, b) => {
             if (sortBool)
                 return a.date < b.date ? -1 : 1;
@@ -530,35 +561,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     //function to sort data by open
-    function sortOpen(data){
+    function sortOpen(data) {
         const sortedOpen = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.open < b.open ? -1 : 1;
-            else 
-            return a.open > b.open ? -1 : 1;
+            else
+                return a.open > b.open ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedOpen);
     }
 
     //function to sort data by close
-    function sortClose(data){
+    function sortClose(data) {
         const sortedClose = data.sort((a, b) => {
             if (sortBool)
                 return a.close < b.close ? -1 : 1;
-            else    
-            return a.close > b.close ? -1 : 1;
+            else
+                return a.close > b.close ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedClose);
     }
 
     //function to sort data by low
-    function sortLow(data){
+    function sortLow(data) {
         const sortedLow = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.low < b.low ? -1 : 1;
-            else 
+            else
                 return a.low > b.low ? -1 : 1;
         });
         swapBool();
@@ -566,21 +597,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     //function to sort data by high
-    function sortHigh(data){
+    function sortHigh(data) {
         const sortedHigh = data.sort((a, b) => {
             if (sortBool)
                 return a.high < b.high ? -1 : 1;
             else
-            return a.high > b.high ? -1 : 1;
+                return a.high > b.high ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedHigh);
     }
 
     //function to sort data by volume
-    function sortVolume(data){
+    function sortVolume(data) {
         const sortedVolume = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.volume < b.volume ? -1 : 1;
             else
                 return a.volume > b.volume ? -1 : 1;
@@ -589,8 +620,8 @@ document.addEventListener("DOMContentLoaded", function () {
         createStockTable(sortedVolume);
     }
 
-
-    function swapBool(){
+    //return true or false
+    function swapBool() {
         if (sortBool)
             sortBool = false;
         else
@@ -599,9 +630,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // function creates bar chart using chartjs.org
+    // function creates bar charts using chartjs
     function displayChartA(data1) {
-        chartBox.innerHTML = '';
         //caption for chart
         const h2 = document.createElement('h2');
         h2.textContent = "Chart";
@@ -611,10 +641,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const chartA = document.createElement('div');
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
-        
-        // const chartC = document.createElement('div');
-        // chartC.setAttribute('id', 'chartC');
-        // chartBox.appendChild(chartC);   
 
         // Chart A - Bar
         let canvas1 = document.createElement('canvas');
@@ -629,8 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // The data for our dataset
             data: {
-                labels: data1.financials.years, 
-                
+                labels: data1.financials.years,
                 datasets: [{
                     label: 'Revenue',
                     backgroundColor: 'blue',
@@ -651,116 +676,256 @@ document.addEventListener("DOMContentLoaded", function () {
             },
 
             // Configuration options go here
-            options: {
-                legend: {
-                    labels: {
-                        fontColor: 'black'
-                    }
-                }
-            }
-        });        
+            options: {}
+        });
+    }
+
+    // function creates candlestick charts using ECharts
+    function displayChartB(min_open, max_open, avg_open,
+        min_close, max_close, avg_close,
+        min_low, max_low, avg_low,
+        min_high, max_high, avg_high) {
+
+        //set variables
+        var chartDom = document.getElementById('chartB');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        //populate graph
+        option = {
+            xAxis: {
+                data: ['Open', 'Close', 'Low', 'High']
+            },
+            yAxis: {
+            },
+            series: [{
+                type: 'k',
+
+                data: [
+                    [avg_open, avg_open, min_open, max_open],
+                    [avg_close, avg_close, min_close, max_close],
+                    [avg_low, avg_low, min_low, max_low],
+                    [avg_high, avg_high, min_high, max_high]
+                ]
+            }]
+        };
+        option && myChart.setOption(option);
+    }
+
+
+    //create chart C
+    function displayChartC(data) {
 
         // Chart C - Line
-        // let canvas3 = document.createElement('canvas');
-        // canvas3.setAttribute('id', 'canvas3');
-        // chartC.appendChild(canvas3);
-        // canvas3.setAttribute('height', 400);
-        // canvas3.setAttribute('width', 400);
-        // const ctx3 = document.getElementById('canvas3').getContext('2d');
-        // const chart3 = new Chart(ctx3, {
-        //     // The type of chart we want to create
-        //     type: 'line',
-
-        //     // The data for our dataset
-        //     data: {
-        //         labels: data2.date,
-        //         datasets: [{
-        //             label: 'Close',
-        //             data: data2.close,
-        //         }, {
-        //             label: 'Volume',
-        //             data: data2.volume,
-        //         }]
-        //     },
-            
-        //     // Configuration options go here
-        //     options: {
-
-        //     }
-        // });
-
-        // chartC.appendChild(canvas3);
+        let canvas3 = document.createElement('canvas');
+        canvas3.setAttribute('id', 'canvas3');
+        const chartC = document.createElement('div');
+        chartC.setAttribute('id', 'chartC');
+        chartBox.appendChild(chartC);
+        chartC.appendChild(canvas3);
+        canvas3.setAttribute('height', 400);
+        canvas3.setAttribute('width', 400);
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
+   
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+              labels: data.date,
+              datasets: [{ 
+                  data: data.volume,
+                  label: "Volume",
+                  borderColor: "#3e95cd",
+                  fill: false
+                }, { 
+                  data: data.close,
+                  label: "Close",
+                  borderColor: "#8e5ea2",
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              title: {
+                display: true,
+                text: 'Stock Closing Price and Volume'
+              }
+            }
+          });
+          
+        /*
+        Chart.defaults.global.defaultFontFamily = "Lato";
+        Chart.defaults.global.defaultFontSize = 18;
+        var dataClose = {
+            label: "Closing Price",
+            data: data.close,
+            lineTension: 0,
+            fill: false,
+            borderColor: 'red'
+        };
+        var dataVolume = {
+            label: "Total Volume",
+            data: data.volume,
+            lineTension: 0,
+            fill: false,
+            borderColor: 'blue'
+        };
+        var dateData = {
+            labels: data.date,
+            datasets: [dataClose, dataVolume]
+        };
+        var chartOptions = {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    boxWidth: 80,
+                    fontColor: 'black'
+                }
+            }
+        };
         
+        var lineChart = new Chart(ctx3, {
+            type: 'line',
+            data: dateData,
+            options: chartOptions
+        });
+        */
+        /*
+        var chartDom = document.getElementById('chartB');
+        var myChart = echarts.init(chartDom);
+        var option;
+        option = {
+            title: {
+                text: 'Close Value & Volume'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['Volume', 'Close']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true  
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: data.date
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: 'Close Value',
+                    type: 'line',
+                    stack: data.date,
+                    data: data.close
+                },
+                {
+                    name: 'Volume',
+                    type: 'line',
+                    stack: data.date,
+                    data: data.volume
+                }
+            ]
+        };
+        
+        option && myChart.setOption(option);
+        */
+        /*
+        // Chart C - Line
+        let canvas3 = document.createElement('canvas');
+        canvas3.setAttribute('id', 'canvas3');
+        const chartC = document.createElement('div');
+        chartC.setAttribute('id', 'chartC');
+        chartBox.appendChild(chartC);
+        chartC.appendChild(canvas3);
+        canvas3.setAttribute('height', 400);
+        canvas3.setAttribute('width', 400);
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
+        // The data for our dataset
+        const lineData = {
+            labels: data.date, 
+            datasets: [{
+                label: 'Open',
+                //borderColor: canvas3.chartColors.red, 
+                //backgroundColor: canvas3.chartColors.red,
+                fill: false,
+                data: data.open,
+                yAxisID: 'y-axis-1',
+            }, {
+                labels: 'Close', 
+                //borderColor: canvas3.chartColors.blue, 
+                //backgroundColor: canvas3.chartColors.blue,
+                fill: false,
+                data: data.close,
+                yAxisID: 'y-axis-2',
+            }, {
+                labels: 'Low', 
+                //borderColor: canvas3.chartColors.yellow, 
+                //backgroundColor: canvas3.chartColors.yellow,
+                fill: false,
+                data: data.low,
+                yAxisID: 'y-axis-3',
+            }, {
+                labels: 'High', 
+                //borderColor: canvas3.chartColors.green, 
+                //backgroundColor: canvas3.chartColors.green,
+                fill: false,
+                data: data.high,
+                yAxisID: 'y-axis-4',
+            }]
+        };
+        const chart3 = new Chart(ctx3, {
+            // The type of chart we want to create
+            type: 'line',
+            data: lineData, 
+            options: {
+                responsive: true,
+                hoverMode: 'index', 
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'Chart C'
+                },
+                scales: {
+                    yAxes: [{
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-1',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-2',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-3',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-4',
+                    }]
+                }
+            }
+        });
+        chartC.appendChild(canvas3);
+    */
 
-        //     option: option
-        // });
-
-        // chartC.appendChild(canvas3);
-        // // */
-
-   }
-
-//    function displayChartB(data) {
-//        //select chart
-//     let chartDom = document.getElementById('chartB');
-//     let myChart = echarts.init(chartDom);
-//     let option;
-
-//     //create chart data
-//     option = {
-//         xAxis: {
-//             data: ['Open', 'Close', 'Low', 'High']
-//         },
-//         yAxis: {
-//             data: [20]
-//         },
-//         series: [{
-//             type: 'candlestick',
-
-//             data: [
-//                 [20, 10, 38],
-//                 [40, 30, 50],
-//                 [31, 33, 44],
-//                 [38, 5, 42]
-//             ]
-//         }]
-// };
-// option && myChart.setOption(option);
-
-    // Chart B - Candlestick (needs both apis)
-    // let canvas2 = document.createElement('canvas');
-    // canvas2.setAttribute('id', 'canvas2');
-    // chartB.appendChild(canvas2);
-    // canvas2.setAttribute('height', 400);
-    // var ctx2 = document.getElementById('canvas2').getContext('2d');
-    // const sortedO = data.sort((a, b) => {
-    //     return a.open < b.open ? -1 : 1;
-    // });
-    // var chart2 = new Chart(ctx2, {
-    //     // The type of chart we want to create
-    //     type: "candlestick",
-
-    //     // The data for our dataset
-    //     data: {
-    //         datasets: [{
-    //             label: 'min',
-    //             data: sortedO[0],
-    //         }, {
-    //             label: 'max',
-    //             //data: data2.max,
-    //         }, {
-    //             label: 'average',
-    //             //data: ((data2.min + data2.max) / 2 ),
-    //         }]
-    //     },
-
-    //     // Configuration options go here
-    //     options: {}
-    // });
-
-    //     chartB.appendChild(canvas2);
-//}
-
+    }
     // function that triggers speech 
     function speak(data2) {
         speakBox.innerHTML = '';
@@ -821,6 +986,40 @@ document.addEventListener("DOMContentLoaded", function () {
             mapBox.style.display = "block";
             stockBox.style.display = "block";
         });
+
+    }
+    // check if company symbol has data filled
+    function checkIfDataExists(data) {
+        if (data.financials == null)
+            return false;
+        else
+            return true;
+    }
+    function displayElegantSolution() {
+
+        chartBox.style.display = "none";
+        speakBox.style.display = "none";
+        financialsBox.style.display = "none";
+
+        elegantSolution.style.display = "block";
+        const image = document.createElement('img');
+        const h2 = document.createElement('h2');
+        h2.textContent = "This data does not currently exist";
+        elegantSolution.appendChild(h2);
+        image.setAttribute('src', './images/placeholder.png');
+        elegantSolution.appendChild(image);
+        const btn = document.createElement('button');
+        elegantSolution.appendChild(btn);
+        btn.setAttribute('id', 'closeButton');
+        btn.addEventListener('click', () => {
+            listBox.style.display = "grid";
+            companyInfoBox.style.display = 'block';
+            ammBox.style.display = "block";
+            mapBox.style.display = "block";
+            stockBox.style.display = "block";
+            elegantSolution.style.display = "none";
+            elegantSolution.innerHTML = "";
+        })
 
     }
 

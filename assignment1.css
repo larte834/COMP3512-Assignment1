@@ -106,7 +106,7 @@ overflow-y: scroll;
     }
 }
 
-.animate {
+#animate, #animate2 {
 display:none;
 justify-content: center;
 align-items: center;
@@ -118,6 +118,38 @@ font-family: Helvetica, sans-serif, Arial;
 animation: load 1.2s infinite 0s ease-in-out;
 animation-direction: alternate;
 text-shadow: 0 0 1px white;
+}
+
+div.a {
+  background-color: rgb(0, 38, 255);
+  color: white;
+}
+
+h2 {
+  color: rgb(8, 6, 117);
+}
+  
+input:focus {
+  background-color: rgb(241, 241, 111);
+}
+  
+div.c div{
+  border: 2px solid rgb(17, 0, 255);
+  padding: 5px;
+  margin: 5px;
+}
+
+label {
+  display: flex;
+}
+
+img {
+  width: 250px;
+  height: 100px;
+}
+
+li, button, a {
+  cursor: pointer;
 }
 
 ul li {
@@ -138,20 +170,11 @@ margin: 5px;
 padding: 5px;
 }
 
-img {
-width: 250px;
-height: 100px;
-}
-
 #goButton, #clearButton, #viewChartsButton, #speakButton, #closeButton {
 color: white;
 background-color: blue;
 border-radius: 1rem;
 padding: .5rem 1rem;
-}
-
-label {
-display: flex;
 }
 
 #crdts {
@@ -163,56 +186,28 @@ position: relative;
 top: -5px;
 }
 
-li, button, a {
-cursor: pointer;
-}
-
 #stockTable {
-width: max-content;
-
+  width: max-content;
 }
 
 #stockTable td {
-border: 1px solid black;
-padding: 5px;
+  border: 1px solid black;
+  padding: 5px;
 }
 
 #stockCalc td {
-border: 1px solid black;
-padding: 5px;
+  border: 1px solid black;
+  padding: 5px;
 }
 
 #financials td {
-border: 1px solid black;
+  border: 1px solid black;
 }
 
 tr:nth-child(odd) {
-background-color: rgb(238, 236, 104);
+  background-color: rgb(238, 236, 104);
 }
 tr:nth-child(even) {
-background-color: rgb(243, 167, 4);
+  background-color: rgb(243, 167, 4);
 }
 
-div.a {
-background-color: rgb(0, 38, 255);
-color: white;
-}
-
-#viewChartsButton {
-  position: relative;
-  top: -20px;
-}
-
-h2 {
-color: rgb(8, 6, 117);
-}
-
-input:focus {
-background-color: rgb(241, 241, 111);
-}
-
-div.c div{
-border: 2px solid rgb(17, 0, 255);
-padding: 5px;
-margin: 5px;
-}
