@@ -1,4 +1,3 @@
-
 //create maps
 let map;
 function initMap() {
@@ -7,9 +6,9 @@ function initMap() {
     });
 }
 
+//load DOM
 document.addEventListener("DOMContentLoaded", function () {
     // set up layout
-
     //header box
     const headerBox = document.querySelector('div.a');
 
@@ -40,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const financialsBox = document.querySelector('div.i');
     financialsBox.style.display = "none";
 
-    //Create and append header
+    //Create and append permanent header title
     const title = document.createElement('label');
     const credits = document.createElement('div');
     credits.setAttribute('id', 'crdts')
@@ -48,8 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
     credits.textContent = "Credits"
     headerBox.appendChild(title);
     title.appendChild(credits);
-
-    //Create and append header section
     const section = document.createElement('section');
     headerBox.appendChild(section);
 
@@ -58,13 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const course = document.createElement('label');
     const party = document.createElement('label');
 
-    //create header
+    //create temporary header
     function header() {
         section.style.display = "grid";
         //create text content
         name.textContent = "Randy Lam & Lidiya Artemenko";
-        course.textContent = "Comp 3512";
-        party.textContent = "";
+        course.textContent = "COMP 3512";
+        party.textContent = "Google Maps, ECharts, chartsjs";
 
         //append labels to the div
         section.appendChild(name);
@@ -80,11 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
     //show header section when mouse over
     document.querySelector('#crdts').addEventListener('mouseenter', header);
 
-    const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
-
     //declare variables
+    const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
     const animation = document.querySelector('.animate');
-    const coList = [];
     const financialsStored = [];
 
     //initially hide sections until company selected
@@ -110,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 // save local storage
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies', json);
-                //coList.push(...data);
             })
             .catch(err => console.log(err));
     }
@@ -127,20 +121,25 @@ document.addEventListener("DOMContentLoaded", function () {
     input.appendChild(clearButton);
     clearButton.setAttribute("type", "reset");
 
+    //display company list if 'clear' button clicked
     document.getElementById('clearButton').addEventListener('click', () => {
         displayList(parsedCompanyList);
     });
 
+    //get input and ul
     const searchBox = document.querySelector('.search');
     const suggestions = document.querySelector('#filterList');
+    //if key entered in input, sort list to display match
     searchBox.addEventListener('keyup', displayMatches);
 
+    //display matches found
     function displayMatches() {
         const matches = findMatches(this.value, parsedCompanyList);
         suggestions.innerHTML = "";
         displayList(matches);
     }
 
+    //find input match to company
     function findMatches(wordToMatch, parsedCompanyList) {
         return parsedCompanyList.filter(obj => {
             const regex = new RegExp(wordToMatch, 'gi');
@@ -148,15 +147,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    //display list of companies
     function displayList(data) {
         const suggestions = document.querySelector('#filterList');
 
-        //displaying list of companies
+        //loop through list of companies
         for (let d of data) {
+            //create list
             const companyName = document.createElement('li');
             companyName.textContent = `${d.name}, ${d.symbol}`;
             suggestions.appendChild(companyName);
-            //const goBtn = document.getElementById('goButton');
+
+            //when company clicked, populate page with information
             companyName.addEventListener('click', (e) => {
                 document.querySelector("div.c").style.display = "block";
                 document.querySelector("div.d").style.display = "block";
@@ -173,21 +175,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayStockData(d.symbol);
 
                 // create and display 3 charts
-                // displayCharts(d, financialsStored);
                 displayChartA(d);
 
-                // speak(d, financialsStored);
+                //call on speak description function
                 speak(d);
 
-            //    displayFinancials(d, financialsStored);
-                displayFinancials(d);
-
+                //display financial information table when view btn clicked
+                createViewBtn(d);
             });
         }
     }
 
     //display company information
     function displayCompanyInfo(data) {
+        
         //clear info box
         companyInfoBox.innerHTML = "";
 
@@ -232,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
         companyURL.textContent = data.website;
         companyInfoBox.appendChild(website);
         companyURL.setAttribute('href', data.website);
-        companyInfoBox.appendChild(companyURL);
+        website.appendChild(companyURL);
 
         //exchange
         exchange.textContent = "Exchange: " + data.exchange;
@@ -249,30 +250,10 @@ document.addEventListener("DOMContentLoaded", function () {
         map.setCenter(coordinates);
     }
 
-    //create elements for stock box
-    const viewChartsButton = document.createElement('button');
-    viewChartsButton.setAttribute('id', 'viewChartsButton');
-    viewChartsButton.textContent = "View Charts";
-    stockBox.prepend(viewChartsButton);
-    viewChartsButton.style.cssFloat = "right";
-
-    //hide and display necessary display boxes 
-    viewChartsButton.addEventListener('click', () => {
-        listBox.style.display = "none";
-        companyInfoBox.style.display = 'none';
-        ammBox.style.display = "none";
-        mapBox.style.display = "none";
-        stockBox.style.display = "none";
-
-        chartBox.style.display = "block";
-        speakBox.style.display = "block";
-        financialsBox.style.display = "block"
-    });
-
     //fetch stock data and call on functions to display it
     function displayStockData(symbol) {
         queryString = `https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
-
+        animation.style.display = "flex";
         // fetch stock info
         fetch(queryString)
             .then(response => {
@@ -280,36 +261,63 @@ document.addEventListener("DOMContentLoaded", function () {
                 else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
             })
             .then(data => {
-                createStockTable(data);
-                stockCalculation(data);
-                financialsStored.push(...data);
-                displayChartB(data);
+                animation.style.display = 'none';
                 
+                //call on function that create stock info table
+                createStockTable(data);
 
-                //document.getElementById('date').addEventListener('click', sortDate(data));
-                //document.getElementById('open').addEventListener('click', sortOpen(data));
+                //call on function that creates avg, min, max table
+                stockCalculation(data);
+
+                //push data into array named financialsStored
+                financialsStored.push(...data);
+
+                //display candlestick graph
+                //displayChartB(data);
 
             })
             .catch(err => console.log(err));
     }
 
-    var sortBool = true;
+    //create elements for view button
+    const viewChartsButton = document.createElement('button');
+    viewChartsButton.setAttribute('id', 'viewChartsButton');
+    viewChartsButton.textContent = "View Charts";
+    stockBox.appendChild(viewChartsButton);
+    // viewChartsButton.style.cssFloat = "right";
 
-    //document.getElementById('date').addEventListener('click', sortDate());
-    //open.addEventListener('click', sortOpen(data));
-    //close.addEventListener('click', sortClose(data));
-    //low.addEventListener('click', sortLow(data));
-    //high.addEventListener('click', sortHigh(data));
-    //volume.addEventListener('click', sortVolume(data));
+    //call on view button event
+    function createViewBtn(d) {
+        //hide and display necessary display boxes 
+        viewChartsButton.addEventListener('click', () => {
+            listBox.style.display = "none";
+            companyInfoBox.style.display = 'none';
+            ammBox.style.display = "none";
+            mapBox.style.display = "none";
+            stockBox.style.display = "none";
     
+            chartBox.style.display = "block";
+            speakBox.style.display = "block";
+            financialsBox.style.display = "block"
+        });
+        //call display financials when view button clicked
+        displayFinancials(d);
+    }
+
     //create table of stock data
     function createStockTable(data) {
+        //call on chart view button
+        //createViewBtn();
+
         //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
         //create table cells
         const table = document.querySelector('#stockTable');
         table.innerHTML = "";
-        table.createCaption();
-        table.textContent = "Stock Data";
+        let title = document.createElement('h2');
+        title.textContent = "Stock Data";
+        table.appendChild(title);
+
+        //create and populate first row of stock data table
         const caption = table.insertRow(0);
         let date = caption.insertCell(0);
         let open = caption.insertCell(1);
@@ -318,14 +326,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let high = caption.insertCell(4);
         let volume = caption.insertCell(5);
 
-        //assign caption values
-        //a = document.createElement('a');
-        //date.appendChild(a);
+        //add id's and links to table labels (row 1)
         date.innerHTML  = "<a href='#'>Date</a>";
-        //a.setAttribute('href', '#');
         date.setAttribute('id', "date");
         
-        //open.appendChild(a);
         open.innerHTML = "<a href='#'>Open</a>";
         open.setAttribute('id', 'open');
         
@@ -341,6 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
         volume.innerHTML = "<a href='#'>Volume</a>";
         volume.setAttribute('id', 'volume');
 
+        //call on event handler to sort by column if top row label is clicked
         document.getElementById('date').addEventListener('click', () => {
             sortDate(data);
         });
@@ -510,6 +515,9 @@ document.addEventListener("DOMContentLoaded", function () {
         
     }
 
+    let sortBool = true;
+
+    //function to sort data by date
     function sortDate (data){
         const sortedDate = data.sort((a, b) => {
             if (sortBool)
@@ -521,6 +529,7 @@ document.addEventListener("DOMContentLoaded", function () {
         createStockTable(sortedDate);
     }
 
+    //function to sort data by open
     function sortOpen(data){
         const sortedOpen = data.sort((a, b) => {
             if(sortBool)
@@ -531,6 +540,8 @@ document.addEventListener("DOMContentLoaded", function () {
         swapBool();
         createStockTable(sortedOpen);
     }
+
+    //function to sort data by close
     function sortClose(data){
         const sortedClose = data.sort((a, b) => {
             if (sortBool)
@@ -542,6 +553,7 @@ document.addEventListener("DOMContentLoaded", function () {
         createStockTable(sortedClose);
     }
 
+    //function to sort data by low
     function sortLow(data){
         const sortedLow = data.sort((a, b) => {
             if(sortBool)
@@ -553,6 +565,7 @@ document.addEventListener("DOMContentLoaded", function () {
         createStockTable(sortedLow);
     }
 
+    //function to sort data by high
     function sortHigh(data){
         const sortedHigh = data.sort((a, b) => {
             if (sortBool)
@@ -563,6 +576,8 @@ document.addEventListener("DOMContentLoaded", function () {
         swapBool();
         createStockTable(sortedHigh);
     }
+
+    //function to sort data by volume
     function sortVolume(data){
         const sortedVolume = data.sort((a, b) => {
             if(sortBool)
@@ -573,6 +588,8 @@ document.addEventListener("DOMContentLoaded", function () {
         swapBool();
         createStockTable(sortedVolume);
     }
+
+
     function swapBool(){
         if (sortBool)
             sortBool = false;
@@ -582,25 +599,24 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    //displayCharts(parsedCompanyList.symbol);
-    // function creates three charts using chartjs.org
-    // chartA - Bar chart, chartB - candlestick, chartC - line
+    // function creates bar chart using chartjs.org
     function displayChartA(data1) {
-
-
+        chartBox.innerHTML = '';
+        //caption for chart
         const h2 = document.createElement('h2');
         h2.textContent = "Chart";
         chartBox.appendChild(h2);
 
+        //create div to hold chart
         const chartA = document.createElement('div');
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
         
-        const chartC = document.createElement('div');
-        chartC.setAttribute('id', 'chartC');
-        chartBox.appendChild(chartC);   
+        // const chartC = document.createElement('div');
+        // chartC.setAttribute('id', 'chartC');
+        // chartBox.appendChild(chartC);   
 
-    //     // Chart A - Bar
+        // Chart A - Bar
         let canvas1 = document.createElement('canvas');
         canvas1.setAttribute('id', 'canvas1');
         chartA.appendChild(canvas1);
@@ -613,7 +629,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // The data for our dataset
             data: {
-                labels: data1.financials.years,
+                labels: data1.financials.years, 
+                
                 datasets: [{
                     label: 'Revenue',
                     backgroundColor: 'blue',
@@ -634,7 +651,13 @@ document.addEventListener("DOMContentLoaded", function () {
             },
 
             // Configuration options go here
-            options: {}
+            options: {
+                legend: {
+                    labels: {
+                        fontColor: 'black'
+                    }
+                }
+            }
         });        
 
         // Chart C - Line
@@ -677,44 +700,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
    }
 
-   function displayChartB(data) {
-    // const h2 = document.createElement('h2');
-    // h2.textContent = "Chart";
-    // chartBox.appendChild(h2);
+//    function displayChartB(data) {
+//        //select chart
+//     let chartDom = document.getElementById('chartB');
+//     let myChart = echarts.init(chartDom);
+//     let option;
 
-    // const chartB = document.createElement('div');
-    // chartB.setAttribute('id', 'chartB');
-    // chartBox.appendChild(chartB);
+//     //create chart data
+//     option = {
+//         xAxis: {
+//             data: ['Open', 'Close', 'Low', 'High']
+//         },
+//         yAxis: {
+//             data: [20]
+//         },
+//         series: [{
+//             type: 'candlestick',
 
-    // let canvas2 = document.createElement('div');
-    // canvas2.setAttribute('id', 'canvas2');
-    // chartB.appendChild(canvas2);
-    // canvas2.setAttribute('height', 400);
-    // canvas2.setAttribute('width', 400);
-
-
-    var chartDom = document.getElementById('chartB');
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-        xAxis: {
-            data: ['Open', 'Close', 'Low', 'High']
-        },
-        yAxis: {
-        },
-        series: [{
-            type: 'k',
-
-            data: [
-                [20, 34, 10,38],
-                [40, 35, 30, 50],
-                [31, 38, 33, 44],
-                [38, 15, 5, 42]
-            ]
-        }]
-};
-option && myChart.setOption(option);
+//             data: [
+//                 [20, 10, 38],
+//                 [40, 30, 50],
+//                 [31, 33, 44],
+//                 [38, 5, 42]
+//             ]
+//         }]
+// };
+// option && myChart.setOption(option);
 
     // Chart B - Candlestick (needs both apis)
     // let canvas2 = document.createElement('canvas');
@@ -748,32 +759,40 @@ option && myChart.setOption(option);
     // });
 
     //     chartB.appendChild(canvas2);
-}
+//}
 
     // function that triggers speech 
     function speak(data2) {
-
+        speakBox.innerHTML = '';
+        //create speak button
         const speakButton = document.createElement('button');
         speakButton.setAttribute('id', 'speakButton');
         speakButton.textContent = "Speak";
-        speakButton.style.cssFloat = "right";
+
+        //create close button
         const closeButton = document.createElement('button');
         closeButton.setAttribute('id', 'closeButton');
         closeButton.textContent = "Close";
+        
+        //create header for section
         const h2 = document.createElement('h2');
         h2.textContent = `${data2.name}, ${data2.symbol}`;
         speakBox.appendChild(h2);
+
+        //show company description
         const p = document.createElement('p');
         p.textContent = data2.description;
-        speakBox.append(speakButton);
+
+        //append elements
+        speakBox.appendChild(speakButton);
         speakBox.appendChild(p);
         speakBox.appendChild(closeButton);
 
+        //if 'speak' button clicked, read description
         speakButton.addEventListener('click', (e) => {
-            e.preventDefault();
             // get the text to say the voice options from form
             let message = data2.description;
-            //let selectedVoice = document.querySelector('#voices').value;
+
             // create utterance and give it text to speak
             let utterance = new SpeechSynthesisUtterance(message);
             // set the speech options (voice, rate, pitch)
@@ -783,9 +802,15 @@ option && myChart.setOption(option);
             // all ready, make it speak
             window.speechSynthesis.speak(utterance);
 
+            //stop speech if 'close' button clicked
+            closeButton.addEventListener('click', () => {
+                window.speechSynthesis.cancel(utterance);
+            });
+
         });
 
-        closeButton.addEventListener('click', (e) => {
+        //if 'close' button clicked, go to default display
+        closeButton.addEventListener('click', () => {
             chartBox.style.display = "none";
             speakBox.style.display = "none";
             financialsBox.style.display = "none";
@@ -795,21 +820,19 @@ option && myChart.setOption(option);
             ammBox.style.display = "block";
             mapBox.style.display = "block";
             stockBox.style.display = "block";
-
-            chartBox.innerHTML = "";
-            speakBox.innerHTML = "";
-            financialsBox.innerHTML = "";
         });
 
     }
 
     //function to display company financial information
     function displayFinancials(data) {
+
         //select table and add a caption
         const financeTable = document.querySelector('#financials');
         financeTable.innerHTML = "";
-        financeTable.createCaption();
-        financeTable.textContent = "Financials";
+        let caption = document.createElement('h2');
+        caption.textContent = "Financials";
+        financeTable.appendChild(caption);
 
         //create rows
         let years = financeTable.insertRow(0);
@@ -846,35 +869,41 @@ option && myChart.setOption(option);
         let rv2018 = revenues.insertCell(2);
         let rv2017 = revenues.insertCell(3);
 
-        rv2019.textContent = data.financials.revenue[0];
-        rv2018.textContent = data.financials.revenue[1];
-        rv2017.textContent = data.financials.revenue[2];
+        rv2019.textContent = "$"+numberCommas(data.financials.revenue[0]);
+        rv2018.textContent = "$"+numberCommas(data.financials.revenue[1]);
+        rv2017.textContent = "$"+numberCommas(data.financials.revenue[2]);
 
         //populate Earnings row
         let earn2019 = earnings.insertCell(1);
         let earn2018 = earnings.insertCell(2);
         let earn2017 = earnings.insertCell(3);
 
-        earn2019.textContent = data.financials.earnings[0];
-        earn2018.textContent = data.financials.earnings[1];
-        earn2017.textContent = data.financials.earnings[2];
+        earn2019.textContent = "$"+numberCommas(data.financials.earnings[0]);
+        earn2018.textContent = "$"+numberCommas(data.financials.earnings[1]);
+        earn2017.textContent = "$"+numberCommas(data.financials.earnings[2]);
 
         //populate assets row
         let as2019 = assets.insertCell(1);
         let as2018 = assets.insertCell(2);
         let as2017 = assets.insertCell(3);
 
-        as2019.textContent = data.financials.assets[0];
-        as2018.textContent = data.financials.assets[1];
-        as2017.textContent = data.financials.assets[2];
+        as2019.textContent = "$"+numberCommas(data.financials.assets[0]);
+        as2018.textContent = "$"+numberCommas(data.financials.assets[1]);
+        as2017.textContent = "$"+numberCommas(data.financials.assets[2]);
 
         //populate liabilities row
         let li2019 = liabilities.insertCell(1);
         let li2018 = liabilities.insertCell(2);
         let li2017 = liabilities.insertCell(3);
 
-        li2019.textContent = data.financials.liabilities[0];
-        li2018.textContent = data.financials.liabilities[1];
-        li2017.textContent = data.financials.liabilities[2];
+        li2019.textContent = "$"+numberCommas(data.financials.liabilities[0]);
+        li2018.textContent = "$"+numberCommas(data.financials.liabilities[1]);
+        li2017.textContent = "$"+numberCommas(data.financials.liabilities[2]);
+    }
+
+    //https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+    //add commas to long numbers
+    function numberCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 });
