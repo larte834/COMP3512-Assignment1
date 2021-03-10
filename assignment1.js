@@ -170,7 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 //call on company info to display
                 displayCompanyInfo(d);
-
                 //call on map to display
                 displayMap(d);
 
@@ -299,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 createStockTable(data);
                 stockCalculation(data);
                 financialsStored.push(...data);
+        
                 //displayChartB(data);
                 displayChartC(data);
 
@@ -761,18 +761,26 @@ document.addEventListener("DOMContentLoaded", function () {
         canvas3.setAttribute('height', 400);
         canvas3.setAttribute('width', 400);
         const ctx3 = document.getElementById('canvas3').getContext('2d');
-   
+        const dates = [];
+        const volumes = [];
+        const closingValues = [];
+        for (d of data){
+            dates.push(d.date);
+            volumes.push(d.volume);
+            closingValues.push(d.close);
+        }
+        //console.log(data.date);
         new Chart(ctx3, {
             type: 'line',
             data: {
-              labels: data.date,
+              labels: dates,
               datasets: [{ 
-                  data: data.volume,
+                  data: volumes,
                   label: "Volume",
                   borderColor: "#3e95cd",
                   fill: false
                 }, { 
-                  data: data.close,
+                  data: closingValues,
                   label: "Close",
                   borderColor: "#8e5ea2",
                   fill: false
