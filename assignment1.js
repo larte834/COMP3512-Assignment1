@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // displayCharts(d, financialsStored);
                 displayChartA(d);
                 //displayChartB(financialsStored);
-                displayChartC(financialsStored);
+                //displayChartC(financialsStored);
 
                 // speak(d, financialsStored);
                 speak(d);
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 stockCalculation(data);
                 financialsStored.push(...data);
                 //displayChartB(data);
-
+                displayChartC(data);
 
                 //document.getElementById('date').addEventListener('click', sortDate(data));
                 //document.getElementById('open').addEventListener('click', sortOpen(data));
@@ -545,6 +545,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     minLow, maxLow, avgLow, 
                     minHigh, maxHigh, avgHigh);
 
+        
+
     }
 
     function sortDate(data) {
@@ -759,7 +761,33 @@ document.addEventListener("DOMContentLoaded", function () {
         canvas3.setAttribute('height', 400);
         canvas3.setAttribute('width', 400);
         const ctx3 = document.getElementById('canvas3').getContext('2d');
-
+   
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+              labels: data.date,
+              datasets: [{ 
+                  data: data.volume,
+                  label: "Volume",
+                  borderColor: "#3e95cd",
+                  fill: false
+                }, { 
+                  data: data.close,
+                  label: "Close",
+                  borderColor: "#8e5ea2",
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              title: {
+                display: true,
+                text: 'Stock Closing Price and Volume'
+              }
+            }
+          });
+          
+        /*
         Chart.defaults.global.defaultFontFamily = "Lato";
         Chart.defaults.global.defaultFontSize = 18;
 
@@ -802,7 +830,7 @@ document.addEventListener("DOMContentLoaded", function () {
             data: dateData,
             options: chartOptions
         });
-        
+        */
         /*
         var chartDom = document.getElementById('chartB');
         var myChart = echarts.init(chartDom);
