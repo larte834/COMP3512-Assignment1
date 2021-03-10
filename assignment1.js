@@ -178,22 +178,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayStockData(d.symbol);
 
                 //if (checkIfDataExists(financialsStored)) {
-                    // create and display 3 charts
-                    // displayCharts(d, financialsStored);
-                    //displayChartA(d);
-                    //displayChartB(financialsStored);
-                    displayChartC(financialsStored);
+                // create and display 3 charts
+                // displayCharts(d, financialsStored);
+                displayChartA(d);
+                //displayChartB(financialsStored);
+                displayChartC(financialsStored);
 
-                    // speak(d, financialsStored);
-                    speak(d);
+                // speak(d, financialsStored);
+                speak(d);
 
-                    //    displayFinancials(d, financialsStored);
-                    displayFinancials(d);
+                //    displayFinancials(d, financialsStored);
+                displayFinancials(d);
                 //} else {
-                    //displayElegantSolution();
+                //displayElegantSolution();
                 //}
 
-                
+
 
 
             });
@@ -452,77 +452,98 @@ document.addEventListener("DOMContentLoaded", function () {
             return a.open < b.open ? -1 : 1;
         });
 
-        min_open.textContent = sortedOpen[0].open;
-        max_open.textContent = sortedOpen[sortedOpen.length - 1].open;
+        const minOpen = sortedOpen[0].open;
+        const maxOpen = sortedOpen[sortedOpen.length - 1].open;
+        min_open.textContent = minOpen;
+        max_open.textContent = maxOpen;
+
 
         const sortedClose = data.sort((a, b) => {
             return a.close < b.close ? -1 : 1;
         });
 
-        min_close.textContent = sortedClose[0].close;
-        max_close.textContent = sortedClose[sortedClose.length - 1].close;
+        const minClose = sortedClose[0].close;
+        const maxClose = sortedClose[sortedClose.length - 1].close;
+        min_close.textContent = minClose;
+        max_close.textContent = maxClose;
+
 
         const sortedLow = data.sort((a, b) => {
             return a.low < b.low ? -1 : 1;
         });
 
-        min_low.textContent = sortedLow[0].low;
-        max_low.textContent = sortedLow[sortedLow.length - 1].low;
+        const minLow = sortedLow[0].low;
+        const maxLow = sortedLow[sortedLow.length - 1].low;
+        min_low.textContent = minLow;
+        max_low.textContent = maxLow;
+
 
         const sortedHigh = data.sort((a, b) => {
             return a.high < b.high ? -1 : 1;
         });
 
-        min_high.textContent = sortedHigh[0].high;
-        max_high.textContent = sortedHigh[sortedHigh.length - 1].high;
+        const minHigh = sortedHigh[0].high;
+        const maxHigh = sortedHigh[sortedHigh.length - 1].high;
+        min_high.textContent = minHigh;
+        max_high.textContent = maxHigh;
+
 
         const sortedVolume = data.sort((a, b) => {
             return a.volume < b.volume ? -1 : 1;
         });
 
-        min_vol.textContent = sortedVolume[0].volume;
-        max_vol.textContent = sortedVolume[sortedVolume.length - 1].volume;
+
+        const minVol = sortedVolume[0].volume;
+        const maxVol = sortedVolume[sortedVolume.length - 1].volume;
+        min_vol.textContent = minVol;
+        max_vol.textContent = maxVol;
 
         //calculate avg and populate cells
         let total = 0;
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
         }
-
         let avgCalc = total / data.length;
-        avg_open.textContent = avgCalc;
+
+        const avgOpen = avgCalc;
+        avg_open.textContent = avgOpen;
 
         total = 0;
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].close);
         }
 
-        avgCalc = total / data.length;
-        avg_close.textContent = avgCalc;
+        const avgClose = total / data.length;
+        avg_close.textContent = avgClose;
 
         total = 0;
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].low);
         }
 
-        avgCalc = total / data.length;
-        avg_low.textContent = avgCalc;
+        const avgLow = total / data.length;
+        avg_low.textContent = avgLow;
 
         total = 0;
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].high);
         }
 
-        avgCalc = total / data.length;
-        avg_high.textContent = avgCalc;
+        const avgHigh = total / data.length;
+        avg_high.textContent = avgHigh;
 
         total = 0;
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].volume);
         }
 
-        avgCalc = total / data.length;
-        avg_vol.textContent = avgCalc;
+        const avgVol = total / data.length;
+        avg_vol.textContent = avgVol;
+
+        displayChartB(minOpen, maxOpen, avgOpen, 
+                    minClose, maxClose, avgClose, 
+                    minLow, maxLow, avgLow, 
+                    minHigh, maxHigh, avgHigh);
 
     }
 
@@ -652,7 +673,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    function displayChartB(data) {
+    function displayChartB(min_open, max_open, avg_open,
+        min_close, max_close, avg_close,
+        min_low, max_low, avg_low,
+        min_high, max_high, avg_high) {
         // const h2 = document.createElement('h2');
         // h2.textContent = "Chart";
         // chartBox.appendChild(h2);
@@ -666,7 +690,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // chartB.appendChild(canvas2);
         // canvas2.setAttribute('height', 400);
         // canvas2.setAttribute('width', 400);
-
 
         var chartDom = document.getElementById('chartB');
         var myChart = echarts.init(chartDom);
@@ -682,10 +705,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 type: 'k',
 
                 data: [
-                    [data.open],
-                    [data.close],
-                    [data.low],
-                    [data.high]
+                    [avg_open, avg_open, min_open, max_open],
+                    [avg_close, avg_close, min_close, max_close],
+                    [avg_low, avg_low, min_low, max_low],
+                    [avg_high, avg_high, min_high, max_high]
                 ]
             }]
         };
@@ -725,6 +748,114 @@ document.addEventListener("DOMContentLoaded", function () {
         //     chartB.appendChild(canvas2);
     }
     function displayChartC(data) {
+
+        // Chart C - Line
+        let canvas3 = document.createElement('canvas');
+        canvas3.setAttribute('id', 'canvas3');
+        const chartC = document.createElement('div');
+        chartC.setAttribute('id', 'chartC');
+        chartBox.appendChild(chartC);
+        chartC.appendChild(canvas3);
+        canvas3.setAttribute('height', 400);
+        canvas3.setAttribute('width', 400);
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
+
+        Chart.defaults.global.defaultFontFamily = "Lato";
+        Chart.defaults.global.defaultFontSize = 18;
+
+        var dataClose = {
+            label: "Closing Price",
+            data: data.close,
+            lineTension: 0,
+            fill: false,
+            borderColor: 'red'
+        };
+
+        var dataVolume = {
+            label: "Total Volume",
+            data: data.volume,
+            lineTension: 0,
+            fill: false,
+            borderColor: 'blue'
+        };
+
+        var dateData = {
+            labels: data.date,
+            datasets: [dataClose, dataVolume]
+        };
+
+        var chartOptions = {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    boxWidth: 80,
+                    fontColor: 'black'
+                }
+            }
+        };
+
+        
+
+        var lineChart = new Chart(ctx3, {
+            type: 'line',
+            data: dateData,
+            options: chartOptions
+        });
+        
+        /*
+        var chartDom = document.getElementById('chartB');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            title: {
+                text: 'Close Value & Volume'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['Volume', 'Close']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true  
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: data.date
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: 'Close Value',
+                    type: 'line',
+                    stack: data.date,
+                    data: data.close
+                },
+                {
+                    name: 'Volume',
+                    type: 'line',
+                    stack: data.date,
+                    data: data.volume
+                }
+            ]
+        };
+        
+        option && myChart.setOption(option);
+        */
+        /*
         // Chart C - Line
         let canvas3 = document.createElement('canvas');
         canvas3.setAttribute('id', 'canvas3');
@@ -812,6 +943,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         chartC.appendChild(canvas3);
+    */
 
     }
     // function that triggers speech 
