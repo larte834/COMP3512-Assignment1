@@ -284,11 +284,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 //display chart C
                 displayChartC(data);
+
             })
             .catch(err => console.log(err));
     }
-
-
 
     //create elements for view button
     const viewChartsButton = document.createElement('button');
@@ -647,8 +646,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Chart A - Bar
         canvas1.setAttribute('id', 'canvas1');
         document.querySelector('#chartA').appendChild(canvas1);
-        // canvas1.setAttribute('height', 400);
-        // canvas1.setAttribute('width', 400);
+        canvas1.setAttribute('height', 400);
+        canvas1.setAttribute('width', 600);
         var ctx = document.getElementById('canvas1').getContext('2d');
 
         var chart = new Chart(ctx, {
@@ -738,14 +737,14 @@ document.addEventListener("DOMContentLoaded", function () {
         new Chart(ctx3, {
             type: 'line',
             data: {
-              labels: data.date,
+              labels: chartCDate,
               datasets: [{ 
-                  data: data.volume,
+                  data: chartCVolume,
                   label: "Volume",
                   borderColor: "#3e95cd",
                   fill: false
                 }, { 
-                  data: data.close,
+                  data: chartCClose,
                   label: "Close",
                   borderColor: "#8e5ea2",
                   fill: false
@@ -759,181 +758,14 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             }
           });
-          
-        /*
-        Chart.defaults.global.defaultFontFamily = "Lato";
-        Chart.defaults.global.defaultFontSize = 18;
-        var dataClose = {
-            label: "Closing Price",
-            data: data.close,
-            lineTension: 0,
-            fill: false,
-            borderColor: 'red'
-        };
-        var dataVolume = {
-            label: "Total Volume",
-            data: data.volume,
-            lineTension: 0,
-            fill: false,
-            borderColor: 'blue'
-        };
-        var dateData = {
-            labels: data.date,
-            datasets: [dataClose, dataVolume]
-        };
-        var chartOptions = {
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    boxWidth: 80,
-                    fontColor: 'black'
-                }
-            }
-        };
-        
-        var lineChart = new Chart(ctx3, {
-            type: 'line',
-            data: dateData,
-            options: chartOptions
-        });
-        */
-        /*
-        var chartDom = document.getElementById('chartB');
-        var myChart = echarts.init(chartDom);
-        var option;
-        option = {
-            title: {
-                text: 'Close Value & Volume'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['Volume', 'Close']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true  
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: data.date
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: 'Close Value',
-                    type: 'line',
-                    stack: data.date,
-                    data: data.close
-                },
-                {
-                    name: 'Volume',
-                    type: 'line',
-                    stack: data.date,
-                    data: data.volume
-                }
-            ]
-        };
-        
-        option && myChart.setOption(option);
-        */
-        /*
-        // Chart C - Line
-        let canvas3 = document.createElement('canvas');
-        canvas3.setAttribute('id', 'canvas3');
-        const chartC = document.createElement('div');
-        chartC.setAttribute('id', 'chartC');
-        chartBox.appendChild(chartC);
-        chartC.appendChild(canvas3);
-        canvas3.setAttribute('height', 400);
-        canvas3.setAttribute('width', 400);
-        const ctx3 = document.getElementById('canvas3').getContext('2d');
-        // The data for our dataset
-        const lineData = {
-            labels: data.date, 
-            datasets: [{
-                label: 'Open',
-                //borderColor: canvas3.chartColors.red, 
-                //backgroundColor: canvas3.chartColors.red,
-                fill: false,
-                data: data.open,
-                yAxisID: 'y-axis-1',
-            }, {
-                labels: 'Close', 
-                //borderColor: canvas3.chartColors.blue, 
-                //backgroundColor: canvas3.chartColors.blue,
-                fill: false,
-                data: data.close,
-                yAxisID: 'y-axis-2',
-            }, {
-                labels: 'Low', 
-                //borderColor: canvas3.chartColors.yellow, 
-                //backgroundColor: canvas3.chartColors.yellow,
-                fill: false,
-                data: data.low,
-                yAxisID: 'y-axis-3',
-            }, {
-                labels: 'High', 
-                //borderColor: canvas3.chartColors.green, 
-                //backgroundColor: canvas3.chartColors.green,
-                fill: false,
-                data: data.high,
-                yAxisID: 'y-axis-4',
-            }]
-        };
-        const chart3 = new Chart(ctx3, {
-            // The type of chart we want to create
-            type: 'line',
-            data: lineData, 
-            options: {
-                responsive: true,
-                hoverMode: 'index', 
-                stacked: false,
-                title: {
-                    display: true,
-                    text: 'Chart C'
-                },
-                scales: {
-                    yAxes: [{
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-1',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-2',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-3',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-4',
-                    }]
-                }
-            }
-        });
-        chartC.appendChild(canvas3);
-    */
+    }
+
+    const dataForChartC  = [];
+    function dataChartC(data) {
 
     }
+
+
     // function that triggers speech 
     function speak(data2) {
         speakBox.innerHTML = '';
