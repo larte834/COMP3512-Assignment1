@@ -108,7 +108,7 @@ body {
       }
 }
 
-.animate {
+#animate, #animate2 {
 display:none;
 justify-content: center;
 align-items: center;

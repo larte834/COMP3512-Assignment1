@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const financialsBox = document.querySelector('div.i');
     financialsBox.style.display = "none";
 
+    // "elegant" solution 
+    const elegantSolution = document.querySelector('div.j');
+    elegantSolution.style.display = "none";
+
     //Create and append header
     const title = document.createElement('label');
     const credits = document.createElement('div');
@@ -83,7 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const url1 = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
 
     //declare variables
-    const animation = document.querySelector('.animate');
+    const animation = document.querySelector('#animate');
+    const animation2 = document.querySelector('#animate2');
     const coList = [];
     const financialsStored = [];
 
@@ -172,15 +177,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 //call on stock data to display
                 displayStockData(d.symbol);
 
-                // create and display 3 charts
-                // displayCharts(d, financialsStored);
-                displayChartA(d);
+                //if (checkIfDataExists(financialsStored)) {
+                    // create and display 3 charts
+                    // displayCharts(d, financialsStored);
+                    //displayChartA(d);
+                    //displayChartB(financialsStored);
+                    displayChartC(financialsStored);
 
-                // speak(d, financialsStored);
-                speak(d);
+                    // speak(d, financialsStored);
+                    speak(d);
 
-            //    displayFinancials(d, financialsStored);
-                displayFinancials(d);
+                    //    displayFinancials(d, financialsStored);
+                    displayFinancials(d);
+                //} else {
+                    //displayElegantSolution();
+                //}
+
+                
+
 
             });
         }
@@ -274,17 +288,19 @@ document.addEventListener("DOMContentLoaded", function () {
         queryString = `https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol=${symbol}`;
 
         // fetch stock info
+        animation2.style.display = "flex";
         fetch(queryString)
             .then(response => {
                 if (response.ok) { return response.json() }
                 else { return Promise.reject({ status: response.status, statusTest: response.statusText }) }
             })
             .then(data => {
+                animation2.style.display = "none";
                 createStockTable(data);
                 stockCalculation(data);
                 financialsStored.push(...data);
-                displayChartB(data);
-                
+                //displayChartB(data);
+
 
                 //document.getElementById('date').addEventListener('click', sortDate(data));
                 //document.getElementById('open').addEventListener('click', sortOpen(data));
@@ -301,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //low.addEventListener('click', sortLow(data));
     //high.addEventListener('click', sortHigh(data));
     //volume.addEventListener('click', sortVolume(data));
-    
+
     //create table of stock data
     function createStockTable(data) {
         //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insert_deleterow
@@ -321,23 +337,23 @@ document.addEventListener("DOMContentLoaded", function () {
         //assign caption values
         //a = document.createElement('a');
         //date.appendChild(a);
-        date.innerHTML  = "<a href='#'>Date</a>";
+        date.innerHTML = "<a href='#'>Date</a>";
         //a.setAttribute('href', '#');
         date.setAttribute('id', "date");
-        
+
         //open.appendChild(a);
         open.innerHTML = "<a href='#'>Open</a>";
         open.setAttribute('id', 'open');
-        
+
         close.innerHTML = "<a href='#'>Close</a>";
         close.setAttribute('id', "close");
-        
+
         low.innerHTML = "<a href='#'>Low</a>";
         low.setAttribute('id', 'low');
-        
+
         high.innerHTML = "<a href='#'>High</a>";
         high.setAttribute('id', 'high');
-        
+
         volume.innerHTML = "<a href='#'>Volume</a>";
         volume.setAttribute('id', 'volume');
 
@@ -359,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('volume').addEventListener('click', () => {
             sortVolume(data);
         });
-        
+
 
         //loop through data and populate cells
         for (let d of data) {
@@ -394,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //clear table
         table.innerHTML = "";
-        
+
         //creating table rows 
         const average = table.insertRow(0);
         const minimum = table.insertRow(1);
@@ -469,48 +485,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //calculate avg and populate cells
         let total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
         }
 
-        let avgCalc = total/data.length;
+        let avgCalc = total / data.length;
         avg_open.textContent = avgCalc;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].close);
         }
 
-        avgCalc = total/data.length;
+        avgCalc = total / data.length;
         avg_close.textContent = avgCalc;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].low);
         }
 
-        avgCalc = total/data.length;
+        avgCalc = total / data.length;
         avg_low.textContent = avgCalc;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].high);
         }
 
-        avgCalc = total/data.length;
+        avgCalc = total / data.length;
         avg_high.textContent = avgCalc;
 
         total = 0;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].volume);
         }
-        
-        avgCalc = total/data.length;
+
+        avgCalc = total / data.length;
         avg_vol.textContent = avgCalc;
-        
+
     }
 
-    function sortDate (data){
+    function sortDate(data) {
         const sortedDate = data.sort((a, b) => {
             if (sortBool)
                 return a.date < b.date ? -1 : 1;
@@ -521,51 +537,51 @@ document.addEventListener("DOMContentLoaded", function () {
         createStockTable(sortedDate);
     }
 
-    function sortOpen(data){
+    function sortOpen(data) {
         const sortedOpen = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.open < b.open ? -1 : 1;
-            else 
-            return a.open > b.open ? -1 : 1;
+            else
+                return a.open > b.open ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedOpen);
     }
-    function sortClose(data){
+    function sortClose(data) {
         const sortedClose = data.sort((a, b) => {
             if (sortBool)
                 return a.close < b.close ? -1 : 1;
-            else    
-            return a.close > b.close ? -1 : 1;
+            else
+                return a.close > b.close ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedClose);
     }
 
-    function sortLow(data){
+    function sortLow(data) {
         const sortedLow = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.low < b.low ? -1 : 1;
-            else 
+            else
                 return a.low > b.low ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedLow);
     }
 
-    function sortHigh(data){
+    function sortHigh(data) {
         const sortedHigh = data.sort((a, b) => {
             if (sortBool)
                 return a.high < b.high ? -1 : 1;
             else
-            return a.high > b.high ? -1 : 1;
+                return a.high > b.high ? -1 : 1;
         });
         swapBool();
         createStockTable(sortedHigh);
     }
-    function sortVolume(data){
+    function sortVolume(data) {
         const sortedVolume = data.sort((a, b) => {
-            if(sortBool)
+            if (sortBool)
                 return a.volume < b.volume ? -1 : 1;
             else
                 return a.volume > b.volume ? -1 : 1;
@@ -573,7 +589,7 @@ document.addEventListener("DOMContentLoaded", function () {
         swapBool();
         createStockTable(sortedVolume);
     }
-    function swapBool(){
+    function swapBool() {
         if (sortBool)
             sortBool = false;
         else
@@ -595,12 +611,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const chartA = document.createElement('div');
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
-        
-        const chartC = document.createElement('div');
-        chartC.setAttribute('id', 'chartC');
-        chartBox.appendChild(chartC);   
 
-    //     // Chart A - Bar
+        //     // Chart A - Bar
         let canvas1 = document.createElement('canvas');
         canvas1.setAttribute('id', 'canvas1');
         chartA.appendChild(canvas1);
@@ -635,121 +647,173 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Configuration options go here
             options: {}
-        });        
+        });
 
-        // Chart C - Line
-        // let canvas3 = document.createElement('canvas');
-        // canvas3.setAttribute('id', 'canvas3');
-        // chartC.appendChild(canvas3);
-        // canvas3.setAttribute('height', 400);
-        // canvas3.setAttribute('width', 400);
-        // const ctx3 = document.getElementById('canvas3').getContext('2d');
-        // const chart3 = new Chart(ctx3, {
+
+    }
+
+    function displayChartB(data) {
+        // const h2 = document.createElement('h2');
+        // h2.textContent = "Chart";
+        // chartBox.appendChild(h2);
+
+        // const chartB = document.createElement('div');
+        // chartB.setAttribute('id', 'chartB');
+        // chartBox.appendChild(chartB);
+
+        // let canvas2 = document.createElement('div');
+        // canvas2.setAttribute('id', 'canvas2');
+        // chartB.appendChild(canvas2);
+        // canvas2.setAttribute('height', 400);
+        // canvas2.setAttribute('width', 400);
+
+
+        var chartDom = document.getElementById('chartB');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            xAxis: {
+                data: ['Open', 'Close', 'Low', 'High']
+            },
+            yAxis: {
+            },
+            series: [{
+                type: 'k',
+
+                data: [
+                    [data.open],
+                    [data.close],
+                    [data.low],
+                    [data.high]
+                ]
+            }]
+        };
+        option && myChart.setOption(option);
+
+        // Chart B - Candlestick (needs both apis)
+        // let canvas2 = document.createElement('canvas');
+        // canvas2.setAttribute('id', 'canvas2');
+        // chartB.appendChild(canvas2);
+        // canvas2.setAttribute('height', 400);
+        // var ctx2 = document.getElementById('canvas2').getContext('2d');
+        // const sortedO = data.sort((a, b) => {
+        //     return a.open < b.open ? -1 : 1;
+        // });
+        // var chart2 = new Chart(ctx2, {
         //     // The type of chart we want to create
-        //     type: 'line',
+        //     type: "candlestick",
 
         //     // The data for our dataset
         //     data: {
-        //         labels: data2.date,
         //         datasets: [{
-        //             label: 'Close',
-        //             data: data2.close,
+        //             label: 'min',
+        //             data: sortedO[0],
         //         }, {
-        //             label: 'Volume',
-        //             data: data2.volume,
+        //             label: 'max',
+        //             //data: data2.max,
+        //         }, {
+        //             label: 'average',
+        //             //data: ((data2.min + data2.max) / 2 ),
         //         }]
         //     },
-            
+
         //     // Configuration options go here
-        //     options: {
-
-        //     }
+        //     options: {}
         // });
 
-        // chartC.appendChild(canvas3);
-        
+        //     chartB.appendChild(canvas2);
+    }
+    function displayChartC(data) {
+        // Chart C - Line
+        let canvas3 = document.createElement('canvas');
+        canvas3.setAttribute('id', 'canvas3');
+        const chartC = document.createElement('div');
+        chartC.setAttribute('id', 'chartC');
+        chartBox.appendChild(chartC);
+        chartC.appendChild(canvas3);
+        canvas3.setAttribute('height', 400);
+        canvas3.setAttribute('width', 400);
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
 
-        //     option: option
-        // });
+        // The data for our dataset
+        const lineData = {
+            labels: data.date, 
+            datasets: [{
+                label: 'Open',
+                //borderColor: canvas3.chartColors.red, 
+                //backgroundColor: canvas3.chartColors.red,
+                fill: false,
+                data: data.open,
+                yAxisID: 'y-axis-1',
 
-        // chartC.appendChild(canvas3);
-        // // */
+            }, {
+                labels: 'Close', 
+                //borderColor: canvas3.chartColors.blue, 
+                //backgroundColor: canvas3.chartColors.blue,
+                fill: false,
+                data: data.close,
+                yAxisID: 'y-axis-2',
+            }, {
+                labels: 'Low', 
+                //borderColor: canvas3.chartColors.yellow, 
+                //backgroundColor: canvas3.chartColors.yellow,
+                fill: false,
+                data: data.low,
+                yAxisID: 'y-axis-3',
+            }, {
+                labels: 'High', 
+                //borderColor: canvas3.chartColors.green, 
+                //backgroundColor: canvas3.chartColors.green,
+                fill: false,
+                data: data.high,
+                yAxisID: 'y-axis-4',
+            }]
+        };
 
-   }
 
-   function displayChartB(data) {
-    // const h2 = document.createElement('h2');
-    // h2.textContent = "Chart";
-    // chartBox.appendChild(h2);
+        const chart3 = new Chart(ctx3, {
+            // The type of chart we want to create
+            type: 'line',
 
-    // const chartB = document.createElement('div');
-    // chartB.setAttribute('id', 'chartB');
-    // chartBox.appendChild(chartB);
+            data: lineData, 
+            options: {
+                responsive: true,
+                hoverMode: 'index', 
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'Chart C'
+                },
+                scales: {
+                    yAxes: [{
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-1',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-2',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-3',
+                    }, {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-4',
+                    }]
+                }
+            }
+        });
 
-    // let canvas2 = document.createElement('div');
-    // canvas2.setAttribute('id', 'canvas2');
-    // chartB.appendChild(canvas2);
-    // canvas2.setAttribute('height', 400);
-    // canvas2.setAttribute('width', 400);
+        chartC.appendChild(canvas3);
 
-
-    var chartDom = document.getElementById('chartB');
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-        xAxis: {
-            data: ['Open', 'Close', 'Low', 'High']
-        },
-        yAxis: {
-        },
-        series: [{
-            type: 'k',
-
-            data: [
-                [20, 34, 10,38],
-                [40, 35, 30, 50],
-                [31, 38, 33, 44],
-                [38, 15, 5, 42]
-            ]
-        }]
-};
-option && myChart.setOption(option);
-
-    // Chart B - Candlestick (needs both apis)
-    // let canvas2 = document.createElement('canvas');
-    // canvas2.setAttribute('id', 'canvas2');
-    // chartB.appendChild(canvas2);
-    // canvas2.setAttribute('height', 400);
-    // var ctx2 = document.getElementById('canvas2').getContext('2d');
-    // const sortedO = data.sort((a, b) => {
-    //     return a.open < b.open ? -1 : 1;
-    // });
-    // var chart2 = new Chart(ctx2, {
-    //     // The type of chart we want to create
-    //     type: "candlestick",
-
-    //     // The data for our dataset
-    //     data: {
-    //         datasets: [{
-    //             label: 'min',
-    //             data: sortedO[0],
-    //         }, {
-    //             label: 'max',
-    //             //data: data2.max,
-    //         }, {
-    //             label: 'average',
-    //             //data: ((data2.min + data2.max) / 2 ),
-    //         }]
-    //     },
-
-    //     // Configuration options go here
-    //     options: {}
-    // });
-
-    //     chartB.appendChild(canvas2);
-}
-
+    }
     // function that triggers speech 
     function speak(data2) {
 
@@ -800,6 +864,40 @@ option && myChart.setOption(option);
             speakBox.innerHTML = "";
             financialsBox.innerHTML = "";
         });
+
+    }
+    // check if company symbol has data filled
+    function checkIfDataExists(data) {
+        if (data.financials == null)
+            return false;
+        else
+            return true;
+    }
+    function displayElegantSolution() {
+
+        chartBox.style.display = "none";
+        speakBox.style.display = "none";
+        financialsBox.style.display = "none";
+
+        elegantSolution.style.display = "block";
+        const image = document.createElement('img');
+        const h2 = document.createElement('h2');
+        h2.textContent = "This data does not currently exist";
+        elegantSolution.appendChild(h2);
+        image.setAttribute('src', './images/placeholder.png');
+        elegantSolution.appendChild(image);
+        const btn = document.createElement('button');
+        elegantSolution.appendChild(btn);
+        btn.setAttribute('id', 'closeButton');
+        btn.addEventListener('click', () => {
+            listBox.style.display = "grid";
+            companyInfoBox.style.display = 'block';
+            ammBox.style.display = "block";
+            mapBox.style.display = "block";
+            stockBox.style.display = "block";
+            elegantSolution.style.display = "none";
+            elegantSolution.innerHTML = "";
+        })
 
     }
 
