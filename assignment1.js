@@ -630,25 +630,27 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    //create elements for chart A
+    //caption for chart
+    const h2 = document.createElement('h2');
+    h2.textContent = "Chart";
+    chartBox.appendChild(h2);
+    const chartA = document.createElement('div');
+    let canvas1 = document.createElement('canvas');
+
     // function creates bar charts using chartjs
     function displayChartA(data1) {
-        //caption for chart
-        const h2 = document.createElement('h2');
-        h2.textContent = "Chart";
-        chartBox.appendChild(h2);
-
         //create div to hold chart
-        const chartA = document.createElement('div');
         chartA.setAttribute('id', 'chartA');
         chartBox.appendChild(chartA);
 
         // Chart A - Bar
-        let canvas1 = document.createElement('canvas');
         canvas1.setAttribute('id', 'canvas1');
-        chartA.appendChild(canvas1);
-        canvas1.setAttribute('height', 400);
-        canvas1.setAttribute('width', 400);
+        document.querySelector('#chartA').appendChild(canvas1);
+        // canvas1.setAttribute('height', 400);
+        // canvas1.setAttribute('width', 400);
         var ctx = document.getElementById('canvas1').getContext('2d');
+
         var chart = new Chart(ctx, {
             // The type of chart we want to create
             type: 'bar',
@@ -679,6 +681,11 @@ document.addEventListener("DOMContentLoaded", function () {
             options: {}
         });
     }
+
+    //create div for chart B
+    const chartB = document.createElement('div');
+    chartB.setAttribute('id', 'chartB');
+    chartBox.appendChild(chartB);
 
     // function creates candlestick charts using ECharts
     function displayChartB(min_open, max_open, avg_open,
@@ -712,19 +719,20 @@ document.addEventListener("DOMContentLoaded", function () {
         option && myChart.setOption(option);
     }
 
+    //create elements for chart C
+    let canvas3 = document.createElement('canvas');
+    const chartC = document.createElement('div');
 
     //create chart C
     function displayChartC(data) {
 
         // Chart C - Line
-        let canvas3 = document.createElement('canvas');
         canvas3.setAttribute('id', 'canvas3');
-        const chartC = document.createElement('div');
         chartC.setAttribute('id', 'chartC');
         chartBox.appendChild(chartC);
         chartC.appendChild(canvas3);
         canvas3.setAttribute('height', 400);
-        canvas3.setAttribute('width', 400);
+        canvas3.setAttribute('width', 600);
         const ctx3 = document.getElementById('canvas3').getContext('2d');
    
         new Chart(ctx3, {

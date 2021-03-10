@@ -211,3 +211,7 @@ tr:nth-child(even) {
   background-color: rgb(243, 167, 4);
 }
 
+#chartB{
+  width: 600px;
+  height:400px;
+}
