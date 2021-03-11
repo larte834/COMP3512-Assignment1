@@ -39,10 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const financialsBox = document.querySelector('div.i');
     financialsBox.style.display = "none";
 
-    // "elegant" solution 
-    const elegantSolution = document.querySelector('div.j');
-    elegantSolution.style.display = "none";
-
     //Create and append header
     const title = document.createElement('label');
     const credits = document.createElement('div');
@@ -176,7 +172,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 //call on company info to display
                 displayCompanyInfo(d);
-
                 //call on map to display
                 displayMap(d);
 
@@ -278,6 +273,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 //call on function that creates avg, min, max table
                 stockCalculation(data);
+                financialsStored.push(...data);
+        
+                //displayChartB(data);
+                displayChartC(data);
 
                 //push data into array named financialsStored
                 financialsStored.push(...data);
@@ -646,8 +645,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Chart A - Bar
         canvas1.setAttribute('id', 'canvas1');
         document.querySelector('#chartA').appendChild(canvas1);
-        canvas1.setAttribute('height', 400);
-        canvas1.setAttribute('width', 600);
         var ctx = document.getElementById('canvas1').getContext('2d');
 
         var chart = new Chart(ctx, {
@@ -730,41 +727,64 @@ document.addEventListener("DOMContentLoaded", function () {
         chartC.setAttribute('id', 'chartC');
         chartBox.appendChild(chartC);
         chartC.appendChild(canvas3);
-        canvas3.setAttribute('height', 400);
-        canvas3.setAttribute('width', 600);
-        const ctx3 = document.getElementById('canvas3').getContext('2d');
-   
-        new Chart(ctx3, {
-            type: 'line',
-            data: {
-              labels: chartCDate,
-              datasets: [{ 
-                  data: chartCVolume,
-                  label: "Volume",
-                  borderColor: "#3e95cd",
-                  fill: false
-                }, { 
-                  data: chartCClose,
-                  label: "Close",
-                  borderColor: "#8e5ea2",
-                  fill: false
-                }
-              ]
-            },
-            options: {
-              title: {
-                display: true,
-                text: 'Stock Closing Price and Volume'
-              }
-            }
-          });
+
+        //push data points into array
+        const dates = [];
+        const volumes = [];
+        const closingValues = [];
+        for (d of data){
+            dates.push(d.date);
+            volumes.push(d.volume);
+            closingValues.push(d.close);
+        }
+
+        var lineChartData = {
+			labels: dates,
+			datasets: [{
+				label: 'Close Price',
+				fill: false,
+				data: closingValues,
+				yAxisID: 'y-axis-1',
+			}, {
+				label: 'Volume',
+				fill: false,
+				data: volumes,
+				yAxisID: 'y-axis-2'
+			}]
+		};
+
+        var ctx3 = document.getElementById('canvas3').getContext('2d');
+			window.myLine = Chart.Line(ctx3, {
+				data: lineChartData,
+				options: {
+					responsive: true,
+					hoverMode: 'index',
+					stacked: false,
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart - Multi Axis'
+					},
+					scales: {
+						yAxes: [{
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'left',
+							id: 'y-axis-1',
+						}, {
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'right',
+							id: 'y-axis-2',
+
+							// grid line settings
+							gridLines: {
+								drawOnChartArea: false, // only want the grid lines for one axis to show up
+							},
+						}],
+					}
+				}
+			});
     }
-
-    const dataForChartC  = [];
-    function dataChartC(data) {
-
-    }
-
 
     // function that triggers speech 
     function speak(data2) {
@@ -826,40 +846,6 @@ document.addEventListener("DOMContentLoaded", function () {
             mapBox.style.display = "block";
             stockBox.style.display = "block";
         });
-
-    }
-    // check if company symbol has data filled
-    function checkIfDataExists(data) {
-        if (data.financials == null)
-            return false;
-        else
-            return true;
-    }
-    function displayElegantSolution() {
-
-        chartBox.style.display = "none";
-        speakBox.style.display = "none";
-        financialsBox.style.display = "none";
-
-        elegantSolution.style.display = "block";
-        const image = document.createElement('img');
-        const h2 = document.createElement('h2');
-        h2.textContent = "This data does not currently exist";
-        elegantSolution.appendChild(h2);
-        image.setAttribute('src', './images/placeholder.png');
-        elegantSolution.appendChild(image);
-        const btn = document.createElement('button');
-        elegantSolution.appendChild(btn);
-        btn.setAttribute('id', 'closeButton');
-        btn.addEventListener('click', () => {
-            listBox.style.display = "grid";
-            companyInfoBox.style.display = 'block';
-            ammBox.style.display = "block";
-            mapBox.style.display = "block";
-            stockBox.style.display = "block";
-            elegantSolution.style.display = "none";
-            elegantSolution.innerHTML = "";
-        })
 
     }
 

@@ -1,3 +1,32 @@
+/* loading animation found on https://codepen.io/kumarsidharth/pen/VBBbJW */
+@keyframes load {
+  0%{
+      opacity: 0.08;
+  /*         font-size: 10px; */
+  /* 				font-weight: 400; */
+      filter: blur(5px);
+      letter-spacing: 3px;
+      }
+  100%{
+  /*         opacity: 1; */
+  /*         font-size: 12px; */
+  /* 				font-weight:600; */
+  /* 				filter: blur(0); */
+      }
+  }
+  
+  #animate, #animate2 {
+  display:none;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+  margin: auto;
+  font-family: Helvetica, sans-serif, Arial;
+  animation: load 1.2s infinite 0s ease-in-out;
+  animation-direction: alternate;
+  text-shadow: 0 0 1px white;
+  }
+
 body {
   background-color: rgb(255, 249, 172);
   font-family: Open Sans, sans-serif;
@@ -5,119 +34,109 @@ body {
 }
 
 .container {
-display: grid;
-grid-gap: 10px;
-grid-template-columns: auto auto auto;
-grid-template-rows: repeat(4, auto);
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 400px auto auto;
+  grid-template-rows: repeat(4, auto);
 }
 
 .box {
-background-color: #43a4f3;
-color: black;
-border-radius: 5px;
-padding: 20px;
-font-size: 150%;
+  background-color: #43a4f3;
+  color: black;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
 }
 
 .a {
-grid-column: 1 / span 3;
-grid-row: 1;
+  grid-column: 1 / span 3;
+  grid-row: 1;
 }
 
 .b {
-grid-column: 1;
-grid-row: 2 / span 3;
-max-height: 900px;
-overflow-y: scroll;
-overflow-x: none;
+  grid-column: 1;
+  grid-row: 2 / span 3;
+  max-height: 900px;
+  overflow-y: scroll;
+  overflow-x: none;
 }
 
 .c {
-grid-column: 2;
-grid-row: 2;
-max-height: 550px;
-overflow-x: none;
-overflow-y: scroll;
+  grid-column: 2;
+  grid-row: 2;
+  max-height: 550px;
+  overflow-x: none;
+  overflow-y: scroll;
 }
+
 .d {
-grid-column: 3;
-grid-row: 4;
-max-height: 100%;
-margin: 0;
-overflow-x: scroll;
-overflow-y: none;
-padding: 0;
+  grid-column: 3;
+  grid-row: 4;
+  max-height: 100%;
+  margin: 0;
+  overflow-x: scroll;
+  overflow-y: none;
+  padding: 0;
 }
 
 .e {
-grid-column: 2;
-grid-row: 3 / span 2;
-max-height: 450px;
+  grid-column: 2;
+  grid-row: 3 / span 2;
+  max-height: 450px;
 }
 
 .f {
-grid-column: 3;
-grid-row: 2 / span 2;
-max-height: 800px;
-margin: 0;
-overflow: scroll;
-padding: 0;
+  grid-column: 3;
+  grid-row: 2 / span 2;
+  max-height: 800px;
+  margin: 0;
+  overflow: scroll;
+  padding: 0;
+}
+
+#outer-grid {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 775px 550px;
+  grid-gap: 5px;
 }
 
 .g {
-grid-column: 1;
-grid-row: 2 / span 2;
-max-height: 900px;
-overflow-x: none;
-overflow-y: scroll;
-background-color: lightblue;
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  max-height: 900px;
+  overflow: scroll;
+  background-color: lightblue;
 }
 
 .h {
-grid-column: 2;
-grid-row: 2;
-/* max-height: 550px; */
-overflow-x: none;
-overflow-y: scroll;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .i {
-grid-column: 2;
-grid-row: 3;
-/* max-height: 350px; */
-overflow-x: none;
-overflow-y: scroll;
+  grid-column: 2;
+  grid-row: 3;
 }
 
-/* loading animation found on https://codepen.io/kumarsidharth/pen/VBBbJW */
-@keyframes load {
-0%{
-    opacity: 0.08;
-/*         font-size: 10px; */
-/* 				font-weight: 400; */
-    filter: blur(5px);
-    letter-spacing: 3px;
-    }
-100%{
-/*         opacity: 1; */
-/*         font-size: 12px; */
-/* 				font-weight:600; */
-/* 				filter: blur(0); */
-    }
+div.g > div {
+  border: 2px solid yellow;
+  margin: 10px;
 }
 
-#animate, #animate2 {
-display:none;
-justify-content: center;
-align-items: center;
-height:100%;
-margin: auto;
-/* 	width: 350px; */
-/* 	font-size:26px; */
-font-family: Helvetica, sans-serif, Arial;
-animation: load 1.2s infinite 0s ease-in-out;
-animation-direction: alternate;
-text-shadow: 0 0 1px white;
+#chartA {
+  width: 650px;
+  height:400px;
+}
+
+#chartB {
+  width: 650px;
+  height:400px;
+}
+
+#chartC {
+  width: 650px;
+  height:400px;
 }
 
 div.a {
@@ -130,7 +149,7 @@ h2 {
 }
   
 input:focus {
-  background-color: rgb(241, 241, 111);
+  background-color: rgb(255, 249, 172);
 }
   
 div.c div{
@@ -153,37 +172,37 @@ li, button, a {
 }
 
 ul li {
-border: 1px solid black;
-padding: 3px;
+  border: 1px solid black;
+  padding: 3px;
 }
 
 li:nth-child(odd) {
-background-color: rgb(238, 236, 104);
+  background-color: rgb(238, 236, 104);
 }
 li:nth-child(even) {
-background-color: rgb(243, 167, 4);
+  background-color: rgb(243, 167, 4);
 }
 
 ul {
-list-style: none;
-margin: 5px;
-padding: 5px;
+  list-style: none;
+  margin: 5px;
+  padding: 5px;
 }
 
 #goButton, #clearButton, #viewChartsButton, #speakButton, #closeButton {
-color: white;
-background-color: blue;
-border-radius: 1rem;
-padding: .5rem 1rem;
+  color: white;
+  background-color: blue;
+  border-radius: 1rem;
+  padding: .5rem 1rem;
 }
 
 #crdts {
-margin: 0px 15px;
-border: 3px solid rgb(236, 221, 6);
-padding: 3px;
-border-radius: 2em/5em;
-position: relative;
-top: -5px;
+  margin: 0px 15px;
+  border: 3px solid rgb(255, 249, 172);
+  padding: 3px;
+  border-radius: 2em/5em;
+  position: relative;
+  top: -5px;
 }
 
 #stockTable {
@@ -209,9 +228,4 @@ tr:nth-child(odd) {
 }
 tr:nth-child(even) {
   background-color: rgb(243, 167, 4);
-}
-
-#chartB{
-  width: 600px;
-  height:400px;
 }
