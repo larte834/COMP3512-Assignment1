@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // save local storage
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies', json);
+                location.reload();
             })
             .catch(err => console.log(err));
     }
@@ -274,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 //call on function that creates avg, min, max table
                 stockCalculation(data);
                 financialsStored.push(...data);
-        
+
                 //displayChartB(data);
                 displayChartC(data);
 
@@ -292,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const viewChartsButton = document.createElement('button');
     viewChartsButton.setAttribute('id', 'viewChartsButton');
     viewChartsButton.textContent = "View Charts";
-    
+
     //create view button event
     function createViewBtn() {
         //hide and display necessary display boxes 
@@ -302,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ammBox.style.display = "none";
             mapBox.style.display = "none";
             stockBox.style.display = "none";
-        
+
             chartBox.style.display = "block";
             speakBox.style.display = "block";
             financialsBox.style.display = "block"
@@ -500,7 +501,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
         }
-        
+
         let avgOpen = (total / data.length).toFixed(4);
         avg_open.textContent = avgOpen;
 
@@ -537,10 +538,10 @@ document.addEventListener("DOMContentLoaded", function () {
         avg_vol.textContent = avgVol;
 
         //pass data into B chart
-        displayChartB(minOpen, maxOpen, avgOpen, 
-                    minClose, maxClose, avgClose, 
-                    minLow, maxLow, avgLow, 
-                    minHigh, maxHigh, avgHigh);
+        displayChartB(minOpen, maxOpen, avgOpen,
+            minClose, maxClose, avgClose,
+            minLow, maxLow, avgLow,
+            minHigh, maxHigh, avgHigh);
 
     }
 
@@ -732,58 +733,66 @@ document.addEventListener("DOMContentLoaded", function () {
         const dates = [];
         const volumes = [];
         const closingValues = [];
-        for (d of data){
+        for (d of data) {
             dates.push(d.date);
             volumes.push(d.volume);
             closingValues.push(d.close);
         }
 
+        let sortedDates = dates.sort((a, b) => {
+            return a < b ? -1 : 1;
+        });
+
         var lineChartData = {
-			labels: dates,
-			datasets: [{
-				label: 'Close Price',
-				fill: false,
-				data: closingValues,
-				yAxisID: 'y-axis-1',
-			}, {
-				label: 'Volume',
-				fill: false,
-				data: volumes,
-				yAxisID: 'y-axis-2'
-			}]
-		};
+            labels: sortedDates,
+            datasets: [{
+                label: 'Close Price',
+                fill: false,
+                data: closingValues,
+                yAxisID: 'y-axis-1',
+                borderColor: 'blue',
+            }, {
+                label: 'Volume',
+                fill: false,
+                data: volumes,
+                yAxisID: 'y-axis-2',
+                borderColor: 'red',
+            }]
+        };
 
         var ctx3 = document.getElementById('canvas3').getContext('2d');
-			window.myLine = Chart.Line(ctx3, {
-				data: lineChartData,
-				options: {
-					responsive: true,
-					hoverMode: 'index',
-					stacked: false,
-					title: {
-						display: true,
-						text: 'Chart.js Line Chart - Multi Axis'
-					},
-					scales: {
-						yAxes: [{
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-							display: true,
-							position: 'left',
-							id: 'y-axis-1',
-						}, {
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-							display: true,
-							position: 'right',
-							id: 'y-axis-2',
+        window.myLine = Chart.Line(ctx3, {
+            data: lineChartData,
+            options: {
+                responsive: true,
+                hoverMode: 'index',
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'Data displayed - Volume & Closing Price'
+                },
+                scales: {
+                    yAxes: [{
+                        type: 'linear', 
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-1',
+                    }, {
+                        type: 'linear', 
+                        display: true,
+                        position: 'right',
+                        id: 'y-axis-2',
 
-							// grid line settings
-							gridLines: {
-								drawOnChartArea: false, // only want the grid lines for one axis to show up
-							},
-						}],
-					}
-				}
-			});
+                        // grid line settings
+                        gridLines: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                    }],
+                }
+            }
+        });
+
+
     }
 
     // function that triggers speech 
@@ -798,7 +807,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const closeButton = document.createElement('button');
         closeButton.setAttribute('id', 'closeButton');
         closeButton.textContent = "Close";
-        
+
         //create header for section
         const h2 = document.createElement('h2');
         h2.textContent = `${data2.name}, ${data2.symbol}`;
@@ -820,11 +829,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // create utterance and give it text to speak
             let utterance = new SpeechSynthesisUtterance(message);
-            // set the speech options (voice, rate, pitch)
-            //utterance.voice = englishVoices.find(voice => voice.name === selectedVoice);
-            //utterance.rate = document.querySelector('#rate').value;
-            //utterance.pitch = document.querySelector('#pitch').value;
-            // all ready, make it speak
             window.speechSynthesis.speak(utterance);
 
             //stop speech if 'close' button clicked
@@ -894,36 +898,36 @@ document.addEventListener("DOMContentLoaded", function () {
         let rv2018 = revenues.insertCell(2);
         let rv2017 = revenues.insertCell(3);
 
-        rv2019.textContent = "$"+numberCommas(data.financials.revenue[0]);
-        rv2018.textContent = "$"+numberCommas(data.financials.revenue[1]);
-        rv2017.textContent = "$"+numberCommas(data.financials.revenue[2]);
+        rv2019.textContent = "$" + numberCommas(data.financials.revenue[0]);
+        rv2018.textContent = "$" + numberCommas(data.financials.revenue[1]);
+        rv2017.textContent = "$" + numberCommas(data.financials.revenue[2]);
 
         //populate Earnings row
         let earn2019 = earnings.insertCell(1);
         let earn2018 = earnings.insertCell(2);
         let earn2017 = earnings.insertCell(3);
 
-        earn2019.textContent = "$"+numberCommas(data.financials.earnings[0]);
-        earn2018.textContent = "$"+numberCommas(data.financials.earnings[1]);
-        earn2017.textContent = "$"+numberCommas(data.financials.earnings[2]);
+        earn2019.textContent = "$" + numberCommas(data.financials.earnings[0]);
+        earn2018.textContent = "$" + numberCommas(data.financials.earnings[1]);
+        earn2017.textContent = "$" + numberCommas(data.financials.earnings[2]);
 
         //populate assets row
         let as2019 = assets.insertCell(1);
         let as2018 = assets.insertCell(2);
         let as2017 = assets.insertCell(3);
 
-        as2019.textContent = "$"+numberCommas(data.financials.assets[0]);
-        as2018.textContent = "$"+numberCommas(data.financials.assets[1]);
-        as2017.textContent = "$"+numberCommas(data.financials.assets[2]);
+        as2019.textContent = "$" + numberCommas(data.financials.assets[0]);
+        as2018.textContent = "$" + numberCommas(data.financials.assets[1]);
+        as2017.textContent = "$" + numberCommas(data.financials.assets[2]);
 
         //populate liabilities row
         let li2019 = liabilities.insertCell(1);
         let li2018 = liabilities.insertCell(2);
         let li2017 = liabilities.insertCell(3);
 
-        li2019.textContent = "$"+numberCommas(data.financials.liabilities[0]);
-        li2018.textContent = "$"+numberCommas(data.financials.liabilities[1]);
-        li2017.textContent = "$"+numberCommas(data.financials.liabilities[2]);
+        li2019.textContent = "$" + numberCommas(data.financials.liabilities[0]);
+        li2018.textContent = "$" + numberCommas(data.financials.liabilities[1]);
+        li2017.textContent = "$" + numberCommas(data.financials.liabilities[2]);
     }
 
     //https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
