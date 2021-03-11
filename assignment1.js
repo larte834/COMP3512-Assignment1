@@ -274,10 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 //call on function that creates avg, min, max table
                 stockCalculation(data);
-                financialsStored.push(...data);
-
-                //displayChartB(data);
-                displayChartC(data);
 
                 //push data into array named financialsStored
                 financialsStored.push(...data);
