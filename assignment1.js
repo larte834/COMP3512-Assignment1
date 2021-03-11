@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // save local storage
                 let json = JSON.stringify(data);
                 localStorage.setItem('listOfCompanies', json);
+                location.reload();
             })
             .catch(err => console.log(err));
     }
@@ -278,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 //call on function that creates avg, min, max table
                 stockCalculation(data);
                 financialsStored.push(...data);
-        
+
                 //displayChartB(data);
                 displayChartC(data);
 
@@ -297,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const viewChartsButton = document.createElement('button');
     viewChartsButton.setAttribute('id', 'viewChartsButton');
     viewChartsButton.textContent = "View Charts";
-    
+
     //create view button event
     function createViewBtn() {
         //hide and display necessary display boxes 
@@ -307,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ammBox.style.display = "none";
             mapBox.style.display = "none";
             stockBox.style.display = "none";
-        
+
             chartBox.style.display = "block";
             speakBox.style.display = "block";
             financialsBox.style.display = "block"
@@ -505,7 +506,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < data.length; i++) {
             total += parseFloat(data[i].open);
         }
-        
+
         let avgOpen = (total / data.length).toFixed(4);
         avg_open.textContent = avgOpen;
 
@@ -542,10 +543,10 @@ document.addEventListener("DOMContentLoaded", function () {
         avg_vol.textContent = avgVol;
 
         //pass data into B chart
-        displayChartB(minOpen, maxOpen, avgOpen, 
-                    minClose, maxClose, avgClose, 
-                    minLow, maxLow, avgLow, 
-                    minHigh, maxHigh, avgHigh);
+        displayChartB(minOpen, maxOpen, avgOpen,
+            minClose, maxClose, avgClose,
+            minLow, maxLow, avgLow,
+            minHigh, maxHigh, avgHigh);
 
     }
 
@@ -740,272 +741,65 @@ document.addEventListener("DOMContentLoaded", function () {
         const dates = [];
         const volumes = [];
         const closingValues = [];
-        for (d of data){
+        for (d of data) {
             dates.push(d.date);
             volumes.push(d.volume);
             closingValues.push(d.close);
         }
 
-        var lineChartData = {
-			labels: dates,
-			datasets: [{
-				label: 'Close Price',
-				fill: false,
-				data: closingValues,
-				yAxisID: 'y-axis-1',
-			}, {
-				label: 'Volume',
-				fill: false,
-				data: volumes,
-				yAxisID: 'y-axis-2'
-			}]
-		};
-
-        var ctx3 = document.getElementById('canvas3').getContext('2d');
-			window.myLine = Chart.Line(ctx3, {
-				data: lineChartData,
-				options: {
-					responsive: true,
-					hoverMode: 'index',
-					stacked: false,
-					title: {
-						display: true,
-						text: 'Chart.js Line Chart - Multi Axis'
-					},
-					scales: {
-						yAxes: [{
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-							display: true,
-							position: 'left',
-							id: 'y-axis-1',
-						}, {
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-							display: true,
-							position: 'right',
-							id: 'y-axis-2',
-
-							// grid line settings
-							gridLines: {
-								drawOnChartArea: false, // only want the grid lines for one axis to show up
-							},
-						}],
-					}
-				}
-			});
-            /*
-        //console.log(data.date);
-        new Chart(ctx3, {
-            type: 'line',
-            data: {
-              labels: dates,
-              datasets: [{ 
-                  data: volumes,
-                  label: "Volume",
-                  borderColor: "#3e95cd",
-                  fill: false,
-                  yAxisID: 'y-axis-1',
-                }, { 
-                  data: closingValues,
-                  label: "Close",
-                  borderColor: "#8e5ea2",
-                  fill: false,
-                  yAxisID: 'y-axis-2',
-                }
-              ]
-            },
-            options: {
-              title: {
-                display: true,
-                text: 'Stock Closing Price and Volume',
-                scales: {
-                    yAxes: [{
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-1',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        id: 'y-axis-2',
-                    }]
-                }
-              }
-            }
-          });
-          */
-        /*
-        Chart.defaults.global.defaultFontFamily = "Lato";
-        Chart.defaults.global.defaultFontSize = 18;
-        var dataClose = {
-            label: "Closing Price",
-            data: data.close,
-            lineTension: 0,
-            fill: false,
-            borderColor: 'red'
-        };
-        var dataVolume = {
-            label: "Total Volume",
-            data: data.volume,
-            lineTension: 0,
-            fill: false,
-            borderColor: 'blue'
-        };
-        var dateData = {
-            labels: data.date,
-            datasets: [dataClose, dataVolume]
-        };
-        var chartOptions = {
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    boxWidth: 80,
-                    fontColor: 'black'
-                }
-            }
-        };
-        
-        var lineChart = new Chart(ctx3, {
-            type: 'line',
-            data: dateData,
-            options: chartOptions
+        sortedDates = dates.sort((a, b) => {
+            return a.date < b.date ? -1 : 1;
         });
-        */
-        /*
-        var chartDom = document.getElementById('chartB');
-        var myChart = echarts.init(chartDom);
-        var option;
-        option = {
-            title: {
-                text: 'Close Value & Volume'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['Volume', 'Close']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true  
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: data.date
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: 'Close Value',
-                    type: 'line',
-                    stack: data.date,
-                    data: data.close
-                },
-                {
-                    name: 'Volume',
-                    type: 'line',
-                    stack: data.date,
-                    data: data.volume
-                }
-            ]
-        };
-        
-        option && myChart.setOption(option);
-        */
-        /*
-        // Chart C - Line
-        let canvas3 = document.createElement('canvas');
-        canvas3.setAttribute('id', 'canvas3');
-        const chartC = document.createElement('div');
-        chartC.setAttribute('id', 'chartC');
-        chartBox.appendChild(chartC);
-        chartC.appendChild(canvas3);
-        canvas3.setAttribute('height', 400);
-        canvas3.setAttribute('width', 400);
-        const ctx3 = document.getElementById('canvas3').getContext('2d');
-        // The data for our dataset
-        const lineData = {
-            labels: data.date, 
+
+        var lineChartData = {
+            labels: sortedDates,
             datasets: [{
-                label: 'Open',
-                //borderColor: canvas3.chartColors.red, 
-                //backgroundColor: canvas3.chartColors.red,
+                label: 'Close Price',
                 fill: false,
-                data: data.open,
+                data: closingValues,
                 yAxisID: 'y-axis-1',
+                borderColor: 'blue',
             }, {
-                labels: 'Close', 
-                //borderColor: canvas3.chartColors.blue, 
-                //backgroundColor: canvas3.chartColors.blue,
+                label: 'Volume',
                 fill: false,
-                data: data.close,
+                data: volumes,
                 yAxisID: 'y-axis-2',
-            }, {
-                labels: 'Low', 
-                //borderColor: canvas3.chartColors.yellow, 
-                //backgroundColor: canvas3.chartColors.yellow,
-                fill: false,
-                data: data.low,
-                yAxisID: 'y-axis-3',
-            }, {
-                labels: 'High', 
-                //borderColor: canvas3.chartColors.green, 
-                //backgroundColor: canvas3.chartColors.green,
-                fill: false,
-                data: data.high,
-                yAxisID: 'y-axis-4',
+                borderColor: 'red',
             }]
         };
-        const chart3 = new Chart(ctx3, {
-            // The type of chart we want to create
-            type: 'line',
-            data: lineData, 
+
+        var ctx3 = document.getElementById('canvas3').getContext('2d');
+        window.myLine = Chart.Line(ctx3, {
+            data: lineChartData,
             options: {
                 responsive: true,
-                hoverMode: 'index', 
+                hoverMode: 'index',
                 stacked: false,
                 title: {
                     display: true,
-                    text: 'Chart C'
+                    text: 'Data displayed - Volume & Closing Price'
                 },
                 scales: {
                     yAxes: [{
-                        type: 'linear',
+                        type: 'linear', 
                         display: true,
                         position: 'left',
                         id: 'y-axis-1',
                     }, {
-                        type: 'linear',
+                        type: 'linear', 
                         display: true,
-                        position: 'left',
+                        position: 'right',
                         id: 'y-axis-2',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-3',
-                    }, {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        id: 'y-axis-4',
-                    }]
+
+                        // grid line settings
+                        gridLines: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                    }],
                 }
             }
         });
-        chartC.appendChild(canvas3);
-    */
+
 
     }
     // function that triggers speech 
@@ -1020,7 +814,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const closeButton = document.createElement('button');
         closeButton.setAttribute('id', 'closeButton');
         closeButton.textContent = "Close";
-        
+
         //create header for section
         const h2 = document.createElement('h2');
         h2.textContent = `${data2.name}, ${data2.symbol}`;
@@ -1042,11 +836,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // create utterance and give it text to speak
             let utterance = new SpeechSynthesisUtterance(message);
-            // set the speech options (voice, rate, pitch)
-            //utterance.voice = englishVoices.find(voice => voice.name === selectedVoice);
-            //utterance.rate = document.querySelector('#rate').value;
-            //utterance.pitch = document.querySelector('#pitch').value;
-            // all ready, make it speak
             window.speechSynthesis.speak(utterance);
 
             //stop speech if 'close' button clicked
@@ -1150,36 +939,36 @@ document.addEventListener("DOMContentLoaded", function () {
         let rv2018 = revenues.insertCell(2);
         let rv2017 = revenues.insertCell(3);
 
-        rv2019.textContent = "$"+numberCommas(data.financials.revenue[0]);
-        rv2018.textContent = "$"+numberCommas(data.financials.revenue[1]);
-        rv2017.textContent = "$"+numberCommas(data.financials.revenue[2]);
+        rv2019.textContent = "$" + numberCommas(data.financials.revenue[0]);
+        rv2018.textContent = "$" + numberCommas(data.financials.revenue[1]);
+        rv2017.textContent = "$" + numberCommas(data.financials.revenue[2]);
 
         //populate Earnings row
         let earn2019 = earnings.insertCell(1);
         let earn2018 = earnings.insertCell(2);
         let earn2017 = earnings.insertCell(3);
 
-        earn2019.textContent = "$"+numberCommas(data.financials.earnings[0]);
-        earn2018.textContent = "$"+numberCommas(data.financials.earnings[1]);
-        earn2017.textContent = "$"+numberCommas(data.financials.earnings[2]);
+        earn2019.textContent = "$" + numberCommas(data.financials.earnings[0]);
+        earn2018.textContent = "$" + numberCommas(data.financials.earnings[1]);
+        earn2017.textContent = "$" + numberCommas(data.financials.earnings[2]);
 
         //populate assets row
         let as2019 = assets.insertCell(1);
         let as2018 = assets.insertCell(2);
         let as2017 = assets.insertCell(3);
 
-        as2019.textContent = "$"+numberCommas(data.financials.assets[0]);
-        as2018.textContent = "$"+numberCommas(data.financials.assets[1]);
-        as2017.textContent = "$"+numberCommas(data.financials.assets[2]);
+        as2019.textContent = "$" + numberCommas(data.financials.assets[0]);
+        as2018.textContent = "$" + numberCommas(data.financials.assets[1]);
+        as2017.textContent = "$" + numberCommas(data.financials.assets[2]);
 
         //populate liabilities row
         let li2019 = liabilities.insertCell(1);
         let li2018 = liabilities.insertCell(2);
         let li2017 = liabilities.insertCell(3);
 
-        li2019.textContent = "$"+numberCommas(data.financials.liabilities[0]);
-        li2018.textContent = "$"+numberCommas(data.financials.liabilities[1]);
-        li2017.textContent = "$"+numberCommas(data.financials.liabilities[2]);
+        li2019.textContent = "$" + numberCommas(data.financials.liabilities[0]);
+        li2018.textContent = "$" + numberCommas(data.financials.liabilities[1]);
+        li2017.textContent = "$" + numberCommas(data.financials.liabilities[2]);
     }
 
     //https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
