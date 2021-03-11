@@ -747,8 +747,8 @@ document.addEventListener("DOMContentLoaded", function () {
             closingValues.push(d.close);
         }
 
-        sortedDates = dates.sort((a, b) => {
-            return a.date < b.date ? -1 : 1;
+        let sortedDates = dates.sort((a, b) => {
+            return a < b ? -1 : 1;
         });
 
         var lineChartData = {
